@@ -1,0 +1,7 @@
+apiVersion: v2
+description: Common service chart
+name: common
+type: library
+version: 1.7.4
+maintainers:
+  - name: DevOps

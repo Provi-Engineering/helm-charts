@@ -1,0 +1,16 @@
+---
+# Source: defaults/templates/microservice.yaml.tpl
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: testmap
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    chart: defaults
+    chartVersion: 1.0.0
+    team: cool-team
+data:
+  foo: "bar"
+  number: "1"
+  properties: "fruit.type=banana\n"

@@ -1,0 +1,15 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+
+configMaps:
+  testmap:
+    data:
+      foo: "bar"
+      number: "1"
+      properties: |
+        fruit.type=banana

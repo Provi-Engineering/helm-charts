@@ -1,0 +1,48 @@
+global:
+  image: docker.io/image:abcd1234
+  appDomain: dummy
+  rootDomain: example.com
+  awsAccountId: "123456789"
+  labels:
+    team: cool-team
+    app.kubernetes.io/name: dummy
+  annotations:
+    provi.repository: https://github.com/example/repo
+    provi.slack: my-cool-team
+  env:
+    RACK_ENV: production
+    RAILS_ENV: production
+
+deployments:
+  web:
+    replicas: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 6
+      targetUtilization: 95
+    pod:
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: dummy
+      containers:
+        app:
+          envFrom:
+            - secretRef:
+                name: dummy
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+              ephemeral-storage: 200Mi
+            limits:
+              memory: 256Mi
+              ephemeral-storage: 200Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            disabled: true
+      tolerations:
+        - spot

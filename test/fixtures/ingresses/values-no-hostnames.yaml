@@ -1,0 +1,16 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+  appDomain: my-cool-service
+  rootDomain: coolservices.com
+
+ingresses:
+  dummy:
+    service:
+      name: web
+      port: 8080
+    ingressClass: "nginx-internal"

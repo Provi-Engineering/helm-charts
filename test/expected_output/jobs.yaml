@@ -1,0 +1,64 @@
+
+---
+# Source: defaults/templates/microservice.yaml.tpl
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrations
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded
+    helm.sh/hook-weight: "0"
+    provi.repository: https://github.com/example/repo
+  labels:
+    app: migrations
+    chart: defaults
+    chartVersion: 1.0.0
+    team: cool-team
+spec:
+  backoffLimit: 1
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      annotations:
+        helm.sh/hook: pre-install,pre-upgrade
+        helm.sh/hook-delete-policy: hook-succeeded
+        helm.sh/hook-weight: "0"
+        provi.repository: https://github.com/example/repo
+      labels:
+        selector: defaults-job-migrations
+        app: migrations
+        chart: defaults
+        chartVersion: 1.0.0
+        team: cool-team
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: migrate
+          image: docker.io/image:abcd1234
+          imagePullPolicy: Always
+          command:
+            - uptime
+          securityContext:
+            runAsNonRoot: false
+          envFrom:
+            - secretRef:
+                name: test-jobs
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - karpenter

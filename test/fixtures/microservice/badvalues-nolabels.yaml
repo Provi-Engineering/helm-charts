@@ -1,0 +1,172 @@
+global:
+  image: docker.io/image:abcd1234
+  appDomain: dummy
+  rootDomain: example.com
+  serviceAccount:
+    name: dummy
+  awsAccountId: "123456789"
+  annotations:
+    provi.repository: https://github.com/example/repo
+    provi.slack: my-cool-team
+  env:
+    RACK_ENV: production
+    RAILS_ENV: production
+
+configMaps:
+  testmap:
+    data:
+      foo: "bar"
+      number: "1"
+      properties: |
+        fruit.type=banana
+
+deployments:
+  web:
+    service:
+      ports:
+        http:
+          port: 8080
+          targetPort: 8080
+          protocol: TCP
+    serviceAccount:
+      enabled: true
+    replicas: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 6
+    pod:
+      affinity:
+        type: karpenter
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: dummy
+      containers:
+        app:
+          envFrom:
+            - secretRef:
+                name: dummy
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+              ephemeral-storage: 200Mi
+            limits:
+              memory: 256Mi
+              ephemeral-storage: 200Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            disabled: true
+      tolerations:
+        - spot
+        - search-admin
+
+statefulSets:
+  worker:
+    service:
+      ports:
+        http:
+          port: 8080
+          targetPort: 8080
+          protocol: TCP
+    serviceAccount:
+      enabled: true
+    replicas: 1
+    pod:
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: dummy
+      containers:
+        app:
+          env:
+            HELLO: world
+          envFrom:
+            - secretRef:
+                name: dummy
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+            limits:
+              memory: 256Mi
+          livenessProbe:
+            disabled: true
+          readinessProbe:
+            disabled: true
+          volumeMounts:
+            - name: data
+              mountPath: /data
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          accessModes:
+            - "ReadWriteOnce"
+          resources:
+            requests:
+              storage: "10Gi"
+
+jobs:
+  migrations:
+    annotations:
+      helm.sh/hook: pre-install,pre-upgrade
+      helm.sh/hook-delete-policy: hook-succeeded
+      helm.sh/hook-weight: "0"
+    pod:
+      restartPolicy: Never
+      containers:
+        migrate:
+          envFrom:
+            - secretRef:
+                name: dummy
+          command:
+            - uptime
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+
+cronJobs:
+  scheduler:
+    schedule: "0 * * * *"
+    pod:
+      containers:
+        schedule:
+          envFrom:
+            - secretRef:
+                name: dummy
+          command:
+            - date
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+
+ingresses:
+  dummy:
+    service:
+      name: web
+      port: 8080
+    hostnames:
+      - dummy.example.com
+    hostnamesNoExternalDNS:
+      - dummy2.example.com
+    annotations:
+      # Basic auth
+      #nginx.ingress.kubernetes.io/auth-type: basic
+      #nginx.ingress.kubernetes.io/auth-secret: dummy-ingress-auth
+      #nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
+      # Google auth
+      nginx.ingress.kubernetes.io/auth-url: "https://auth.example.com/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.com/oauth2/start?rd=https://$host$uri"
+    # nginx-internal is only accessible within the VPC (or on VPN)
+    # nginx is publicly accessible (use with caution)
+    ingressClass: "nginx-internal"

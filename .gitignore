@@ -1,0 +1,12 @@
+_repo/*
+.DS_Store
+# VIM: Swap-files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+test/fixtures/**/charts/
+plan.out
+*.tfstate
+.terraform
+.terraform.lock.hcl
+dev/charts/
+

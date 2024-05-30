@@ -1,0 +1,62 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+  appDomain: test-app-domain
+  serviceAccount:
+    name: test-podspec
+  env:
+    RAILS_ENV: staging
+
+deployments:
+  web:
+    # default is RollingUpdate
+    strategy: Recreate
+    annotations:
+      test.override.annotation: hello-override-world
+    labels:
+      testOverrideLabel: hello-override-world
+    service:
+      ports:
+        http:
+          port: 8080
+          targetPort: 8080
+          protocol: TCP
+    serviceAccount:
+      enabled: true
+    replicas: 3
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 6
+    pod:
+      restartPolicy: OnFailure
+      affinity:
+        type: karpenter
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: test-podspec
+      containers:
+        app:
+          envFrom:
+            - secretRef:
+                name: test-podspec
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+              ephemeral-storage: 200Mi
+            limits:
+              memory: 256Mi
+              ephemeral-storage: 200Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            disabled: true
+      tolerations:
+        - spot
