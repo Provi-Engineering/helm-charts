@@ -36,6 +36,8 @@ jobs:
   #        snyk iac test ./output.yaml
 
   release:
+    #needs:
+    #  test
     permissions:
       contents: write
     runs-on: ubuntu-latest
