@@ -1,0 +1,2 @@
+data:
+  foo: {{ .Values.configMaps.testmap.foo }}

@@ -1,0 +1,30 @@
+global:
+  awsAccountId: "123456789"
+  image: "docker.io/image:abcd1234"
+  annotations:
+    provi.repository: "https://github.com/example/repo"
+  labels:
+    team: cool-team 
+
+deployments:
+  web:
+    replicas: 1
+    pod:
+      affinity:
+        type: karpenter
+      containers:
+        app:
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+              ephemeral-storage: 200Mi
+            limits:
+              memory: 256Mi
+              ephemeral-storage: 200Mi
+          livenessProbe:
+            disabled: true
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sleep", "30" ]

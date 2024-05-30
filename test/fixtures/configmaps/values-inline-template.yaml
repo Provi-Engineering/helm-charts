@@ -1,0 +1,13 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+
+configMaps:
+  testmap:
+    # I honestly have no idea why this would ever be useful --creisor
+    template: "foo: {{ .Values.configMaps.testmap.foo }}"
+    foo: "bif"

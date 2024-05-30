@@ -1,0 +1,37 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+    provi.slack: my-cool-team
+  labels:
+    team: cool-team
+
+jobs:
+  migrations:
+    annotations:
+      helm.sh/hook: pre-install,pre-upgrade
+      helm.sh/hook-delete-policy: hook-succeeded
+      helm.sh/hook-weight: "0"
+    pod:
+      restartPolicy: Never
+      containers:
+        migrate:
+          envFrom:
+            - secretRef:
+                name: test-jobs
+          command:
+            - uptime
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            disabled: true
+

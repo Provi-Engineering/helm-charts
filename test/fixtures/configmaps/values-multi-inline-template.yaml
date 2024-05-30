@@ -1,0 +1,16 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+
+configMaps:
+  testmap:
+    # note that the templates _must_ be in a directory called `files`
+    template:
+      foo_config: "foo={{ .Values.configMaps.testmap.foo }}"
+      bar_config: "bar={{ .Values.configMaps.testmap.bar }}"
+    foo: "mango"
+    bar: "papaya"

@@ -1,0 +1,56 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+  serviceAccount:
+    name: test-statefulsets
+
+statefulSets:
+  worker:
+    service:
+      ports:
+        http:
+          port: 8080
+          targetPort: 8080
+          protocol: TCP
+    serviceAccount:
+      enabled: true
+    replicas: 1
+    pod:
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: test-statefulsets
+      containers:
+        app:
+          env:
+            HELLO: world
+          envFrom:
+            - secretRef:
+                name: test-statefulsets
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+            limits:
+              memory: 256Mi
+              cpu: 1
+          livenessProbe:
+            disabled: true
+          readinessProbe:
+            disabled: true
+          volumeMounts:
+            - name: data
+              mountPath: /data
+    volumeClaimTemplates:
+      - metadata:
+          name: data
+        spec:
+          accessModes:
+            - "ReadWriteOnce"
+          resources:
+            requests:
+              storage: "1Gi"

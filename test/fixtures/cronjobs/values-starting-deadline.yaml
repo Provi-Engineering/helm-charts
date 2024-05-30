@@ -1,0 +1,31 @@
+global:
+  awsAccountId: "123456789"
+  image: "docker.io/image:abcd1234"
+  annotations:
+    provi.repository: "https://github.com/example/repo"
+    test.annotation: hello-test-world
+  labels:
+    team: cool-team
+
+cronJobs:
+  scheduler:
+    startingDeadlineSeconds: 10
+    schedule: "0 * * * *"
+    annotations:
+      test.override.annotation: hello-override-world
+    labels:
+      testOverrideLabel: hello-override-world
+    pod:
+      containers:
+        schedule:
+          envFrom:
+            - secretRef:
+                name: test-cronjobs
+          command:
+            - date
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi

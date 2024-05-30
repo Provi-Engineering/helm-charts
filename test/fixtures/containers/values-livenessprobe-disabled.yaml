@@ -1,0 +1,62 @@
+global:
+  awsAccountId: "123456789"
+  image: "docker.io/image:abcd1234"
+  annotations:
+    provi.repository: "https://github.com/example/repo"
+  labels:
+    team: cool-team 
+
+deployments:
+  web:
+    replicas: 1
+    pod:
+      affinity:
+        type: karpenter
+      topologySpreadConstraints:
+        enabled: true
+        matchLabels:
+          app.kubernetes.io/name: test-deployments
+      initContainers:
+        - name: test-initcontainer
+          image: busybox:1.33.2
+          command: ['sh', '-c', 'echo Hello, initial world!']
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+            limits:
+              memory: 256Mi
+      containers:
+        app:
+          env:
+            TEST_SECRET:
+              secretKeyRef:
+                name: myCoolTestSecret
+                key: password
+            TEST_CONFIGMAP_VALUE:
+              configMapValue:
+                name: fruit
+                key: banana
+          envFrom:
+            - secretRef:
+                name: test-deployments
+          command: ['sh']
+          args: ['-c', 'echo Hello, World']
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 250m
+              ephemeral-storage: 200Mi
+            limits:
+              memory: 256Mi
+              ephemeral-storage: 200Mi
+          livenessProbe:
+            disabled: true
+          readinessProbe:
+            disabled: true
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sleep", "30" ]

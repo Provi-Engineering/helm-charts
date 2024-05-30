@@ -1,0 +1,19 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+
+ingresses:
+  dummy:
+    service:
+      name: web
+      port: 8080
+    hostnames:
+      - test-ingresses.example.com
+    annotations:
+      nginx.ingress.kubernetes.io/auth-url: "https://auth.example.com/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.com/oauth2/start?rd=https://$host$uri"
+    ingressClass: "nginx-internal"

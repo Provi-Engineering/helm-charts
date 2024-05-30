@@ -1,0 +1,29 @@
+version: v1.19.0
+ignore:
+  SNYK-CC-00610:
+    - '*':
+        reason: DEVOPS-2184
+  SNYK-CC-00612:
+    - '*':
+        reason: DEVOPS-2185
+  SNYK-CC-00613:
+    - '*':
+        reason: DEVOPS-2186
+  SNYK-CC-00614:
+    - '*':
+        reason: DEVOPS-2187
+  SNYK-CC-00615:
+    - '*':
+        reason: DEVOPS-2188
+  SNYK-CC-00625:
+    - '*':
+        reason: DEVOPS-2189
+  SNYK-CC-00656:
+    - '*':
+        reason: DEVOPS-2190
+  SNYK-CC-00659:
+    - '*':
+        reason: DEVOPS-2191
+  SNYK-CC-00654:
+    - '*':
+        reason: DEVOPS-2192

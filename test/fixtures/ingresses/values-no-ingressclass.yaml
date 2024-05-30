@@ -1,0 +1,19 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+    provi.slack: my-cool-team
+  labels:
+    team: cool-team
+
+ingresses:
+  dummy:
+    service:
+      port: 8080
+      name: web
+    scheme: internal
+    hostnames:
+      - test-ingresses.example.com
+    certificateArn: "arn:aws:acm:us-east-2:123456789:certificate/abcd1234-1a2b-3c4d-5e6f-987654abcd123"
+    healthcheckPath: /healthz
