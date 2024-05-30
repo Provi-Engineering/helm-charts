@@ -8,7 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: snyk/snyk:node
+    container:
+      image: snyk/snyk:node
+      volumes:
+        - ${GITHUB_WORKSPACE}:/helm_charts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,6 +29,7 @@ jobs:
 
       - name: Snyk IAC test
         run: |
+          helm dependency build helm_charts/charts/
           helm template -f test/fixtures/microservice/values-basic.yaml test/fixtures/microservice/ > output.yaml
           snyk iac test ./output.yaml
   release:
