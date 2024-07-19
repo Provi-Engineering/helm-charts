@@ -6,12 +6,36 @@ on:
       - main
 
 jobs:
-  #test:
-  # TODO make test
+  security:
+    runs-on: ubuntu-latest
+    container:
+      image: snyk/snyk:node
+      volumes:
+        - ${{ github.workspace }}:/helm_charts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        run: |
+          apt-get update
+          apt-get -y install apt-transport-https ca-certificates curl gpg
+          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+          apt-get update
+          apt-get -y install helm
+
+      - name: Snyk IAC test
+        run: |
+          helm dependency build helm_charts/charts/
+          helm template -f test/fixtures/microservice/values-basic.yaml test/fixtures/microservice/ > output.yaml
+          snyk iac test ./output.yaml
 
   release:
-    #needs:
-    #  test
+    needs:
+      security
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -25,6 +49,10 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install helm deps
+        run: |
+          helm dependency build "${GITHUB_WORKSPACE}/charts"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
