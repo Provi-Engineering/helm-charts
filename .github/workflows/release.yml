@@ -30,7 +30,7 @@ jobs:
       - name: Snyk IAC test
         run: |
           helm dependency build /helm_charts/charts/
-          helm template -f test/fixtures/microservice/values-basic.yaml test/fixtures/microservice/ > output.yaml
+          helm template -f /helm_charts/test/fixtures/microservice/values-basic.yaml /helm_charts/test/fixtures/microservice/ > ./output.yaml
           snyk iac test ./output.yaml
 
   release:
