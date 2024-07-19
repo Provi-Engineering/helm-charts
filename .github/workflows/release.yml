@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - ci-testing
 
 jobs:
   security:
@@ -28,9 +29,11 @@ jobs:
           apt-get -y install helm
 
       - name: Snyk IAC test
+        env:
+          SNYK_TOKEN : ${{ secrets.SNYK_TOKEN }}
         run: |
-          helm dependency build /helm_charts/charts/
-          helm template -f /helm_charts/test/fixtures/microservice/values-basic.yaml /helm_charts/test/fixtures/microservice/ > ./output.yaml
+          helm dependency update ./test/fixtures/microservice/
+          helm template -f ./test/fixtures/microservice/values-basic.yaml ./test/fixtures/microservice/ > ./output.yaml
           snyk iac test ./output.yaml
 
   release:
@@ -52,7 +55,7 @@ jobs:
 
       - name: Install helm deps
         run: |
-          helm dependency build "${GITHUB_WORKSPACE}/charts"
+          helm dependency build "${GITHUB_WORKSPACE}/charts/common"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
