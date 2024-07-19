@@ -6,38 +6,39 @@ on:
       - main
 
 jobs:
-  #test:
-  #  runs-on: ubuntu-latest
-  #  container:
-  #    image: snyk/snyk:node
-  #    volumes:
-  #      # not sure how to do this:
-  #      # Error response from daemon: create ${GITHUB_WORKSPACE}: "${GITHUB_WORKSPACE}" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path
-  #      - ${GITHUB_WORKSPACE}:/helm_charts
-  #  steps:
-  #    - name: Checkout
-  #      uses: actions/checkout@v4
-  #      with:
-  #        fetch-depth: 0
+  security:
+    runs-on: ubuntu-latest
+    container:
+      image: snyk/snyk:node
+      volumes:
+        # not sure how to do this:
+        # Error response from daemon: create ${GITHUB_WORKSPACE}: "${GITHUB_WORKSPACE}" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path
+        #- ${GITHUB_WORKSPACE}:/helm_charts
+        - ${{ github.workspace }}:/helm_charts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #    - name: Install Helm
-  #      run: |
-  #        apt-get update
-  #        apt-get -y install apt-transport-https ca-certificates curl gpg
-  #        curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
-  #        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
-  #        apt-get update
-  #        apt-get -y install helm
+      - name: Install Helm
+        run: |
+          apt-get update
+          apt-get -y install apt-transport-https ca-certificates curl gpg
+          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+          apt-get update
+          apt-get -y install helm
 
-  #    - name: Snyk IAC test
-  #      run: |
-  #        helm dependency build helm_charts/charts/
-  #        helm template -f test/fixtures/microservice/values-basic.yaml test/fixtures/microservice/ > output.yaml
-  #        snyk iac test ./output.yaml
+      - name: Snyk IAC test
+        run: |
+          helm dependency build helm_charts/charts/
+          helm template -f test/fixtures/microservice/values-basic.yaml test/fixtures/microservice/ > output.yaml
+          snyk iac test ./output.yaml
 
   release:
-    #needs:
-    #  test
+    needs:
+      security
     permissions:
       contents: write
     runs-on: ubuntu-latest
