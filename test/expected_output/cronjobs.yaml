@@ -15,6 +15,7 @@ metadata:
     team: cool-team
     testOverrideLabel: hello-override-world
 spec:
+  timeZone: Etc/UTC
   suspend: false
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5

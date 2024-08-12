@@ -24,6 +24,7 @@ metadata:
   labels:
     {{- include "common.helper.labels" (dict "global" $global.labels "override" $cronJobDetails.labels) | nindent 4}}
 spec:
+  timeZone: {{ default 	"Etc/UTC" $cronJobDetails.timeZone }}
   suspend: {{ default false $cronJobDetails.disabled }}
   concurrencyPolicy: {{ default "Forbid" $cronJobDetails.concurrencyPolicy }}
   failedJobsHistoryLimit: {{ default 5 $cronJobDetails.failedJobsHistoryLimit }}

@@ -311,6 +311,7 @@ metadata:
     chartVersion: 1.0.0
     team: cool-team
 spec:
+  timeZone: Etc/UTC
   suspend: false
   concurrencyPolicy: Forbid
   failedJobsHistoryLimit: 5
