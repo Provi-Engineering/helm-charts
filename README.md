@@ -26,16 +26,12 @@ See instructions in the [develoment documentation](dev/README.md). The upshot:
 * Update the version in `common/Chart.yaml`
 * PR your change
 * Merge
-* Pull the master branch
-* Tag the branch with your new version number
-* Push tags
-* Run `make package`
-* If successful, delete the previous package in the `_repo/` directory
-* Run `make publish`
+
+Github actions will tag and deploy the chart.
 
 The chart will be accessible in two ways:
 * via `helm repo add s3://provi-helm-charts` if you're using the [Helm s3 plugin](https://github.com/hypnoglow/helm-s3)
-* via `helm repo add http://provi-helm-charts.pvfog.org` if you're on a host in our VPC or on VPN
+* via https://provi-engineering.github.io/helm-charts/
 
 ## Common Microservice
 
