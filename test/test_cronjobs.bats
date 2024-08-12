@@ -80,3 +80,9 @@ teardown() {
 	assert_failure
   assert_output --partial 'You must specify a schedule for cronJob [scheduler]'
 }
+
+# bats test_tags=tag:cronjobs-timezone
+@test "cronjobs: includes timeZone if specified" {
+  run helm template -f test/fixtures/cronjobs/values-timezone.yaml test/fixtures/cronjobs/
+  assert_output --partial 'timeZone: US/Central'
+}
