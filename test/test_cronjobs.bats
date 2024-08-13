@@ -39,9 +39,8 @@ teardown() {
 
 # bats test_tags=tag:cronjobs-serviceaccount
 @test "cronjobs: includes service account if specified" {
-  skip "this should work, but it doesn't -- in the future, look into lines 11-15 in _cronjob.yaml.tpl"
   helm template -f test/fixtures/cronjobs/values-serviceaccount.yaml test/fixtures/cronjobs/ > "$TEST_TEMP_DIR/serviceaccount_output.yaml"
-  assert diff -ub test/expected_output/values-serviceaccount.yaml "$TEST_TEMP_DIR/serviceaccount_output.yaml"
+  assert diff -ub test/expected_output/cronjobs-serviceaccount.yaml "$TEST_TEMP_DIR/serviceaccount_output.yaml"
 }
 
 # bats test_tags=tag:cronjobs-suspend

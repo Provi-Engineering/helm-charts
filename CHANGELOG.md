@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.7] - 2024-08-13
+
+### Fixed
+
+- Fixed a logic error in the serviceaccount template
+- Fixed the `serviceAccount` syntax in the values file for the cronjobs tests and un-skipped a test
+
+### Added
+
+- Added test to the CI job
+
 ## [1.7.6] - 2024-08-12
 
 ### Added

@@ -7,6 +7,23 @@ on:
       - ci-testing
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Install helm deps
+        run: |
+          helm dependency build "${GITHUB_WORKSPACE}/charts/common"
+
+      - name: Test
+        run: |
+          make test
+
   security:
     runs-on: ubuntu-latest
     container:
@@ -37,8 +54,7 @@ jobs:
           snyk iac test ./output.yaml
 
   release:
-    needs:
-      security
+    needs: [test, security]
     permissions:
       contents: write
     runs-on: ubuntu-latest
