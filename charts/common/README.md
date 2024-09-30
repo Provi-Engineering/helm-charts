@@ -101,6 +101,15 @@ deployments:
       minReplicas: 2
       maxReplicas: 6
       targetUtilization: 80
+      # Optional - this will scale down the pods 1 at a time every 120s (2mins)
+      # Details of options defined:
+      #   https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#scaling-policies
+      behavior:
+        scaleDown:
+          policies:
+          - type: Pods
+            value: 1
+            periodSeconds: 120
     pod:
       containers:
         app:
