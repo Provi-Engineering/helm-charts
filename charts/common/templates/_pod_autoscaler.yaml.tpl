@@ -19,7 +19,6 @@ spec:
           type: Utilization
           averageUtilization: {{ default 80 .autoscaling.targetUtilization }}
   {{- if .autoscaling.behavior }}
-  behavior:
-  {{ toYaml .autoscaling.behavior | indent 2 }}
+  behavior: {{ toYaml .autoscaling.behavior | nindent 4 }}
   {{- end }}
 {{ end }}

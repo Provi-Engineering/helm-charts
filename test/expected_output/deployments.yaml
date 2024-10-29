@@ -50,7 +50,6 @@ metadata:
     team: cool-team
     testOverrideLabel: hello-override-world
 spec:
-  replicas: 3
   selector:
     matchLabels:
       selector: defaults-deployment-web
