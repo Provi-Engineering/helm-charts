@@ -27,3 +27,6 @@ ignore:
   SNYK-CC-00654:
     - '*':
         reason: DEVOPS-2192
+  SNYK-CC-00639:
+    - '*':
+        reason: "seccompProfile is not used"
