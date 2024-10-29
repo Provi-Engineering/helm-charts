@@ -32,7 +32,9 @@ metadata:
   labels:
     {{- include "common.helper.labels" (dict "global" $global.labels "override" $deploymentDetails.labels) | nindent 4}}
 spec:
+  {{- if not $deploymentDetails.autoscaling }}
   replicas: {{ required (printf "You must set a replicas count for deployment [%s]" $deploymentName ) $deploymentDetails.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       selector: {{ $selector }}

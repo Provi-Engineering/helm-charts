@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2024-10-29
+
+### Fixed
+
+- Remove static replicas from deployment when autoscaling enabled
+- Fixed autoscaling.behavior error
+
 ## [1.7.7] - 2024-08-13
 
 ### Fixed

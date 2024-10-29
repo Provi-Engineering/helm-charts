@@ -48,7 +48,6 @@ metadata:
     chartVersion: 1.0.0
     team: cool-team
 spec:
-  replicas: 3
   selector:
     matchLabels:
       selector: test-foo-selector
