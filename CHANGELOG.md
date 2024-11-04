@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.1] - 2024-11-04
+
+### added
+
+- Added an `imperva` boolean which will take care of prepending an `origin-` to the hostnames and adding an annotation to add the original hostname to the listener rule conditions so that Imperva requests to that hostname will work.
+
 ## [1.8.0] - 2024-10-29
 
 ### Fixed

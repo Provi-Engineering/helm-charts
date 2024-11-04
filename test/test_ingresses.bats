@@ -120,3 +120,17 @@ teardown() {
   run helm template -f test/fixtures/ingresses/values-no-ingressclass.yaml test/fixtures/ingresses/
   assert_output --partial "ingressClassName: alb"
 }
+
+# bats test_tags=tag:alb-imperva
+@test "alb-imperva: sets imperva-related annotations and scheme" {
+  run helm template -f test/fixtures/ingresses/values-alb-imperva.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/conditions.cool_foo_service: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"test-ingresses.example.com\"]}}]'"
+  assert_output --partial "external-dns.alpha.kubernetes.io/hostname: origin-test-ingresses.example.com"
+  assert_output --partial "host: \"origin-test-ingresses.example.com\""
+}
+
+# bats test_tags=tag:alb-imperva-multiple-hostnames
+@test "alb-imperva: sets imperva-related annotations and scheme with multiple hostnames" {
+  run helm template -f test/fixtures/ingresses/values-alb-imperva-multiple-hostnames.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/conditions.web: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"test-ingresses.example.com\",\"test2-ingresses.example.com\"]}}]'"
+}
