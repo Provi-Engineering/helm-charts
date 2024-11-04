@@ -13,7 +13,7 @@ ingresses:
     service:
       port: 8080
       name: cool_foo_service
-    scheme: internal
+    scheme: internet-facing
     ingressClass: "alb"
     hostnames:
       - test-ingresses.example.com

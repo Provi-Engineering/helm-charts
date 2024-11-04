@@ -3,6 +3,7 @@
 {{- $serviceErrorMessage := "You must specify a service with name and port for ingress [%v]" }}
 {{- $schemeErrorMessage := "You must specify a scheme (internal, internet-facing) for ingress [%v]" }}
 {{- $certArnErrorMessage := "You must specify a certificateArn for ingress [%v]" }}
+{{- $impervaSchemeErrorMessage := "If you are putting your service behind Imperva, you must set scheme to internet-facing" }}
 {{- $commonAnnotations := dict }}
 {{- $_ := set $commonAnnotations "nginx.ingress.kubernetes.io/proxy-body-size" "0" }}
 
@@ -25,6 +26,11 @@
 {{- $nameTag := printf "Name=%s-alb" $k }}
 {{- $_ := required (printf $certArnErrorMessage $k) $v.certificateArn}}
 {{- $_ := required (printf $schemeErrorMessage $k) $v.scheme}}
+{{- if $v.imperva }}
+{{- if ne $v.scheme "internet-facing" }}
+  {{- fail $impervaSchemeErrorMessage }}
+{{- end }}
+{{- end }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/backend-protocol" "HTTP" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/certificate-arn" $v.certificateArn }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/scheme" $v.scheme }}
@@ -110,4 +116,3 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-

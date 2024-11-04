@@ -130,7 +130,14 @@ teardown() {
 }
 
 # bats test_tags=tag:alb-imperva-multiple-hostnames
-@test "alb-imperva: sets imperva-related annotations and scheme with multiple hostnames" {
+@test "alb-imperva-multiple-hostnames: sets imperva-related annotations and scheme with multiple hostnames" {
   run helm template -f test/fixtures/ingresses/values-alb-imperva-multiple-hostnames.yaml test/fixtures/ingresses/
   assert_output --partial "alb.ingress.kubernetes.io/conditions.web: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"test-ingresses.example.com\",\"test2-ingresses.example.com\"]}}]'"
+}
+
+# bats test_tags=tag:alb-imperva-internal-sceme
+@test "alb-imperva-internal-scheme: fails if the scheme is internal" {
+  run helm template -f test/fixtures/ingresses/badvalues-alb-imperva-internal-scheme.yaml test/fixtures/ingresses/
+  assert_failure
+  assert_output --partial "you must set scheme to internet-facing"
 }

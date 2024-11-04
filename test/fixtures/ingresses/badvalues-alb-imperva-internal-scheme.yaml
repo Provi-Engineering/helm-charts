@@ -12,10 +12,9 @@ ingresses:
     imperva: true
     service:
       port: 8080
-      name: web
-    scheme: internet-facing
+      name: cool_foo_service
+    scheme: internal
     ingressClass: "alb"
     hostnames:
       - test-ingresses.example.com
-      - test2-ingresses.example.com
     certificateArn: "arn:aws:acm:us-east-2:123456789:certificate/abcd1234-1a2b-3c4d-5e6f-987654abcd123"
