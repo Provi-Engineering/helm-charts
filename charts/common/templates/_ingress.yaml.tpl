@@ -3,6 +3,7 @@
 {{- $serviceErrorMessage := "You must specify a service with name and port for ingress [%v]" }}
 {{- $schemeErrorMessage := "You must specify a scheme (internal, internet-facing) for ingress [%v]" }}
 {{- $certArnErrorMessage := "You must specify a certificateArn for ingress [%v]" }}
+{{- $impervaSchemeErrorMessage := "If you are putting your service behind Imperva, you must set scheme to internet-facing" }}
 {{- $commonAnnotations := dict }}
 {{- $_ := set $commonAnnotations "nginx.ingress.kubernetes.io/proxy-body-size" "0" }}
 
@@ -25,6 +26,11 @@
 {{- $nameTag := printf "Name=%s-alb" $k }}
 {{- $_ := required (printf $certArnErrorMessage $k) $v.certificateArn}}
 {{- $_ := required (printf $schemeErrorMessage $k) $v.scheme}}
+{{- if $v.imperva }}
+{{- if ne $v.scheme "internet-facing" }}
+  {{- fail $impervaSchemeErrorMessage }}
+{{- end }}
+{{- end }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/backend-protocol" "HTTP" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/certificate-arn" $v.certificateArn }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/scheme" $v.scheme }}
@@ -36,28 +42,42 @@
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/ssl-redirect" "443" }}
 {{- end }}
 
-{{/* Generate a single hostname based on app/root domains or fall back to hostnames list */}}
+{{/* Generate hostnames with or without 'origin-' prefix based on imperva setting */}}
 {{- $appDomain := default $v.appDomain $global.appDomain }}
 {{- $rootDomain := default $v.rootDomain $global.rootDomain }}
-{{- $hostname := printf "%s.%s" $appDomain $rootDomain }}
-{{- $hostnames := default (list $hostname) $v.hostnames }}
+{{- $defaultHostname := printf "%s.%s" $appDomain $rootDomain }}
+{{- $hostnames := default (list $defaultHostname) $v.hostnames }}
+
+{{/* Apply 'origin-' prefix to each hostname in the list if imperva is true */}}
+{{- if $v.imperva }}
+  {{- $hostnames = (list) }}
+  {{- range $h := $v.hostnames }}
+    {{- $prefixedHostname := printf "origin-%s" $h }}
+    {{- $hostnames = append $hostnames $prefixedHostname }}
+  {{- end }}
+{{- end }}
+
 {{- $rules := $hostnames }}
 {{- if $v.hostnamesNoExternalDNS }}
 {{- $rules = (concat $hostnames $v.hostnamesNoExternalDNS) }}
 {{- end }}
 
+{{/* Set external-dns and Imperva-specific annotations */}}
 {{- $_ := set $finalAnnotations "external-dns.alpha.kubernetes.io/hostname" (join "," $hostnames) }}
+{{- if $v.imperva }}
+  {{- $_ := set $albAnnotations (printf "alb.ingress.kubernetes.io/conditions.%s" $v.service.name) (printf "[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"%s\"]}}]" (join "\",\"" $v.hostnames)) }}
+{{- end }}
+
 {{- $finalAnnotations = (mergeOverwrite $finalAnnotations $global.annotations $commonAnnotations $ingressesAnnotations $annotations) }}
 {{- if eq $v.ingressClass "alb" -}}
-
-{{- $finalAnnotations = (mergeOverwrite $finalAnnotations $albAnnotations) }}
+  {{- $finalAnnotations = (mergeOverwrite $finalAnnotations $albAnnotations) }}
 {{- end -}}
 {{- $_ := required (printf $serviceErrorMessage $k) $v.service }}
 
 {{/* Require specific app/root domain if hostnames list is not set */}}
 {{- if not $v.hostnames }}
-{{- $_ := required (printf "You must specify appDomain in the ingress or global section") $appDomain }}
-{{- $_ := required (printf "You must specify rootDomain in the ingress or global section") $rootDomain }}
+  {{- $_ := required (printf "You must specify appDomain in the ingress or global section") $appDomain }}
+  {{- $_ := required (printf "You must specify rootDomain in the ingress or global section") $rootDomain }}
 {{- end }}
 
 ---
