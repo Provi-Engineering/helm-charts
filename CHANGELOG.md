@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.2] - 2024-12-17
+
+### Fixed
+
+- If the global variable `awsAccountId` is not quoted, it will ensure it is an int and not an float64 (which will fail to deploy).
+
 ## [1.8.1] - 2024-11-04
 
-### added
+### Added
 
 - Added an `imperva` boolean which will take care of prepending an `origin-` to the hostnames and adding an annotation to add the original hostname to the listener rule conditions so that Imperva requests to that hostname will work.
 
