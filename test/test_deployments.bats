@@ -47,3 +47,9 @@ teardown() {
   run helm template -f test/fixtures/deployments/values-serviceaccount-role.yaml test/fixtures/deployments/
   assert_output --partial 'eks.amazonaws.com/role-arn: "arn:aws:iam::123456789:role/my-cool-role'
 }
+
+# bats test_tags=tag:deployments-unquoted-accountid
+@test "deployments: forces type to string when awsAccountId is unquoted" {
+  helm template -f test/fixtures/deployments/badvalues-unquoted-accountid.yaml test/fixtures/deployments/ > "$TEST_TEMP_DIR/default_output.yaml"
+  assert diff -ub test/expected_output/deployments.yaml "$TEST_TEMP_DIR/default_output.yaml"
+}

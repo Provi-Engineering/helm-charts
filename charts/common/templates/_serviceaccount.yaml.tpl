@@ -1,5 +1,5 @@
 {{- define "common.kubernetes.serviceaccount" -}}
-{{- $awsAccountId := .global.awsAccountId | required "global.awsAccountId is required." -}}
+{{- $awsAccountId := ( .global.awsAccountId | int ) | required "global.awsAccountId is required." -}}
 {{- $role := .serviceAccount.role | default dict }}
 {{- $roleName := .serviceAccount.name }}
 {{- if $role.name }}
