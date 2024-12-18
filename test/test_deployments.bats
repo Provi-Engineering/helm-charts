@@ -53,3 +53,11 @@ teardown() {
   helm template -f test/fixtures/deployments/badvalues-unquoted-accountid.yaml test/fixtures/deployments/ > "$TEST_TEMP_DIR/default_output.yaml"
   assert diff -ub test/expected_output/deployments.yaml "$TEST_TEMP_DIR/default_output.yaml"
 }
+
+# bats test_tags=tag:deployments-with-secrets
+@test "deployments: renders ClusterExternalSecret if secrets are included" {
+  run helm template -f test/fixtures/deployments/values-with-secrets.yaml test/fixtures/deployments/
+  assert_output --partial 'kind: ClusterExternalSecret'
+  assert_output --partial 'key: rds!cluster-1a123b45-6c78-901d-e234-f5678901a23b'
+  assert_output --partial 'secretKey: MY_COOL_SECRET_1'
+}
