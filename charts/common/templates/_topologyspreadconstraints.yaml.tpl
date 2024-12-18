@@ -1,4 +1,4 @@
-{{/* This provides topologySpreadConstraints to the pod spec. See: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ */}}
+{{- /* This provides topologySpreadConstraints to the pod spec. See: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ */}}
 {{- define "common.kubernetes.topologyspreadconstraints" -}}
 topologySpreadConstraints:
 - maxSkew: 1

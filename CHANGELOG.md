@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.3] - 2024-12-18
+
+### Added
+
+- Added the `ClusterExternalSecret` template. If you include a `secrets` key in your values file, the template will be rendered.
+
 ## [1.8.2] - 2024-12-17
 
 ### Fixed

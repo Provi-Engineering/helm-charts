@@ -42,13 +42,13 @@
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/ssl-redirect" "443" }}
 {{- end }}
 
-{{/* Generate hostnames with or without 'origin-' prefix based on imperva setting */}}
+{{- /* Generate hostnames with or without 'origin-' prefix based on imperva setting */}}
 {{- $appDomain := default $v.appDomain $global.appDomain }}
 {{- $rootDomain := default $v.rootDomain $global.rootDomain }}
 {{- $defaultHostname := printf "%s.%s" $appDomain $rootDomain }}
 {{- $hostnames := default (list $defaultHostname) $v.hostnames }}
 
-{{/* Apply 'origin-' prefix to each hostname in the list if imperva is true */}}
+{{- /* Apply 'origin-' prefix to each hostname in the list if imperva is true */}}
 {{- if $v.imperva }}
   {{- $hostnames = (list) }}
   {{- range $h := $v.hostnames }}
@@ -62,7 +62,7 @@
 {{- $rules = (concat $hostnames $v.hostnamesNoExternalDNS) }}
 {{- end }}
 
-{{/* Set external-dns and Imperva-specific annotations */}}
+{{- /* Set external-dns and Imperva-specific annotations */}}
 {{- $_ := set $finalAnnotations "external-dns.alpha.kubernetes.io/hostname" (join "," $hostnames) }}
 {{- if $v.imperva }}
   {{- $_ := set $albAnnotations (printf "alb.ingress.kubernetes.io/conditions.%s" $v.service.name) (printf "[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"%s\"]}}]" (join "\",\"" $v.hostnames)) }}
@@ -74,7 +74,7 @@
 {{- end -}}
 {{- $_ := required (printf $serviceErrorMessage $k) $v.service }}
 
-{{/* Require specific app/root domain if hostnames list is not set */}}
+{{- /* Require specific app/root domain if hostnames list is not set */}}
 {{- if not $v.hostnames }}
   {{- $_ := required (printf "You must specify appDomain in the ingress or global section") $appDomain }}
   {{- $_ := required (printf "You must specify rootDomain in the ingress or global section") $rootDomain }}

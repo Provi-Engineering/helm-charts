@@ -1,6 +1,6 @@
 dependencies:
 - name: common
   repository: file://../../../charts/common
-  version: 1.8.2
-digest: sha256:b1117d1e58734d0e5f8c9d64fbe3fbf457501472418bf52e3d57f7c1086d6a3d
-generated: "2024-12-17T15:21:01.985475-06:00"
+  version: 1.8.3
+digest: sha256:c8b09ac13ff4d41bbfd5b940b5a9c274e84c29f6494dc3d3e4ecefbb5791a6ce
+generated: "2024-12-18T12:31:01.967511-06:00"
