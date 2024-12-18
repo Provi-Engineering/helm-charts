@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.4] - 2024-12-18
+
+### Added
+
+- You can now specify `targetMemoryUtilization` and/or `targetCPUUtilization` for the autoscaler. Existing usage of `targetUtilization` will continue to assume you mean cpu.
+
 ## [1.8.3] - 2024-12-18
 
 ### Added

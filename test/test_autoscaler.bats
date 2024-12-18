@@ -42,3 +42,12 @@ teardown() {
   run helm template -f test/fixtures/autoscaler/values-target-utilization.yaml test/fixtures/autoscaler/
   assert_output --partial 'averageUtilization: 95'
 }
+
+# bats test_tags=tag:autoscaler-memory-utilization
+@test "autoscaler: cretes a memory resource utilization target if provided" {
+  run helm template -f test/fixtures/autoscaler/values-memory.yaml test/fixtures/autoscaler/
+  assert_output --partial 'name: cpu'
+  assert_output --partial 'name: memory'
+  assert_output --partial 'averageUtilization: 60'
+  assert_output --partial 'averageUtilization: 50'
+}

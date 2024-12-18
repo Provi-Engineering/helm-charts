@@ -17,7 +17,15 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ default 80 .autoscaling.targetUtilization }}
+          averageUtilization: {{ default 80 (or .autoscaling.targetUtilization .autoscaling.targetCPUUtilization) }}
+  {{- if .autoscaling.targetMemoryUtilization }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .autoscaling.targetMemoryUtilization }}
+  {{- end }}
   {{- if .autoscaling.behavior }}
   behavior: {{ toYaml .autoscaling.behavior | nindent 4 }}
   {{- end }}
