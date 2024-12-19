@@ -37,6 +37,9 @@
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/tags" $nameTag }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/target-type" "ip" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-path" $healthcheckPath }}
+{{- if $v.healthcheckPort }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-port" $v.healthcheckPort }}
+{{- end }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-protocol" "HTTP" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/listen-ports" "[{\"HTTP\": 80}, {\"HTTPS\":443}]" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/ssl-redirect" "443" }}
