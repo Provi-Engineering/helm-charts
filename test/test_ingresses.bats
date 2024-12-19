@@ -147,3 +147,9 @@ teardown() {
   run helm template -f test/fixtures/ingresses/values-healthcheck-port.yaml test/fixtures/ingresses/
   assert_output --partial "alb.ingress.kubernetes.io/healthcheck-port: 8181"
 }
+
+# bats test_tags=tag:alb-healthcheck-protocol
+@test "alb-healthcheck-protocol: sets healthcheck-protocl annotation if specified" {
+  run helm template -f test/fixtures/ingresses/values-healthcheck-protocol.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS"
+}

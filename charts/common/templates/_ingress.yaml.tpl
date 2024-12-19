@@ -23,6 +23,7 @@
 {{- $albAnnotations := dict }}
 {{ if eq $v.ingressClass "alb" }}
 {{- $healthcheckPath := default "/health" $v.healthcheckPath }}
+{{- $healthcheckProtocol := default "HTTP" $v.healthcheckProtocol }}
 {{- $nameTag := printf "Name=%s-alb" $k }}
 {{- $_ := required (printf $certArnErrorMessage $k) $v.certificateArn}}
 {{- $_ := required (printf $schemeErrorMessage $k) $v.scheme}}
@@ -40,7 +41,7 @@
 {{- if $v.healthcheckPort }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-port" $v.healthcheckPort }}
 {{- end }}
-{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-protocol" "HTTP" }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/healthcheck-protocol" ( upper $healthcheckProtocol ) }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/listen-ports" "[{\"HTTP\": 80}, {\"HTTPS\":443}]" }}
 {{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/ssl-redirect" "443" }}
 {{- end }}
