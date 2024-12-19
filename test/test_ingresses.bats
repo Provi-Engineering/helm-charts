@@ -141,3 +141,9 @@ teardown() {
   assert_failure
   assert_output --partial "you must set scheme to internet-facing"
 }
+
+# bats test_tags=tag:alb-healthcheck-port
+@test "alb-healthcheck-port: sets healthcheck-port annotation if specified" {
+  run helm template -f test/fixtures/ingresses/values-healthcheck-port.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/healthcheck-port: 8181"
+}
