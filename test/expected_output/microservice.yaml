@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -11,11 +11,11 @@ metadata:
     eks.amazonaws.com/sts-regional-endpoints: "true"
   labels:
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -25,7 +25,7 @@ metadata:
     provi.slack: my-cool-team
   labels:
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 data:
@@ -33,7 +33,7 @@ data:
   number: "1"
   properties: "fruit.type=banana\n"
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: Service
 metadata:
@@ -44,12 +44,12 @@ metadata:
   labels:
     app: web
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
   selector:
-    selector: defaults-deployment-web
+    selector: my-cool-app-deployment-web
   type: ClusterIP
   ports:
     - name: http
@@ -57,7 +57,7 @@ spec:
       protocol: TCP
       targetPort: 8080
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: Service
 metadata:
@@ -68,12 +68,12 @@ metadata:
   labels:
     app: worker
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
   selector:
-    selector: defaults-statefulset-worker
+    selector: my-cool-app-statefulset-worker
   type: ClusterIP
   ports:
     - name: http
@@ -81,7 +81,7 @@ spec:
       protocol: TCP
       targetPort: 8080
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -92,23 +92,23 @@ metadata:
   labels:
     app: web
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
   selector:
     matchLabels:
-      selector: defaults-deployment-web
+      selector: my-cool-app-deployment-web
   template:
     metadata:
       annotations:
         provi.repository: https://github.com/example/repo
         provi.slack: my-cool-team
       labels:
-        selector: defaults-deployment-web
+        selector: my-cool-app-deployment-web
         app: web
         app.kubernetes.io/name: dummy
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: cool-team
     spec:
@@ -178,7 +178,7 @@ spec:
                     values:
                       - karpenter
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -198,7 +198,7 @@ spec:
           type: Utilization
           averageUtilization: 80
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -209,7 +209,7 @@ metadata:
   labels:
     app: worker
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
@@ -219,17 +219,17 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      selector: defaults-statefulset-worker
+      selector: my-cool-app-statefulset-worker
   template:
     metadata:
       annotations:
         provi.repository: https://github.com/example/repo
         provi.slack: my-cool-team
       labels:
-        selector: defaults-statefulset-worker
+        selector: my-cool-app-statefulset-worker
         app: worker
         app.kubernetes.io/name: dummy
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: cool-team
     spec:
@@ -295,7 +295,7 @@ spec:
           requests:
             storage: 10Gi
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -306,7 +306,7 @@ metadata:
   labels:
     app: scheduler
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
@@ -327,10 +327,10 @@ spec:
             provi.repository: https://github.com/example/repo
             provi.slack: my-cool-team
           labels:
-            selector: defaults-cronjob-scheduler
+            selector: my-cool-app-cronjob-scheduler
             app: scheduler
             app.kubernetes.io/name: dummy
-            chart: defaults
+            chart: my-cool-app
             chartVersion: 1.0.0
             team: cool-team
         spec:
@@ -370,7 +370,7 @@ spec:
                         values:
                           - karpenter
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -385,7 +385,7 @@ metadata:
     external-dns.alpha.kubernetes.io/ttl: "10"
   labels:
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
@@ -412,7 +412,7 @@ spec:
                 port:
                   number: 8080
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -426,7 +426,7 @@ metadata:
   labels:
     app: migrations
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
@@ -442,10 +442,10 @@ spec:
         provi.repository: https://github.com/example/repo
         provi.slack: my-cool-team
       labels:
-        selector: defaults-job-migrations
+        selector: my-cool-app-job-migrations
         app: migrations
         app.kubernetes.io/name: dummy
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: cool-team
     spec:

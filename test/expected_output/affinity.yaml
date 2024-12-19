@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -10,24 +10,24 @@ metadata:
   labels:
     app: web
     app.kubernetes.io/name: dummy
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
   replicas: 3
   selector:
     matchLabels:
-      selector: defaults-deployment-web
+      selector: my-cool-app-deployment-web
   template:
     metadata:
       annotations:
         provi.repository: https://github.com/example/repo
         provi.slack: my-cool-team
       labels:
-        selector: defaults-deployment-web
+        selector: my-cool-app-deployment-web
         app: web
         app.kubernetes.io/name: dummy
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: cool-team
     spec:

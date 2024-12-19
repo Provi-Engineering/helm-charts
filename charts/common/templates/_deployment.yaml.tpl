@@ -22,6 +22,10 @@
 {{ include "common.kubernetes.podautoscaler" (dict "global" $global "selector" $deploymentName "autoscaling" .) }}
 {{- end }}
 
+{{- with $deploymentDetails.podDisruptionBudget }}
+{{- include "common.kubernetes.pod_disruption_budget" (dict "chart" $chart "deploymentName" $deploymentName "selector" $selector "pdb" .) }}
+{{- end }}
+
 ---
 apiVersion: apps/v1
 kind: Deployment

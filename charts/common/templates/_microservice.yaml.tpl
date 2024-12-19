@@ -42,5 +42,4 @@
 {{- with .Values.secrets }}
 {{- include "common.kubernetes.clusterexternalsecret" (dict "root" $ "global" $global "secrets" .) -}}
 {{- end -}}
-
 {{- end }}

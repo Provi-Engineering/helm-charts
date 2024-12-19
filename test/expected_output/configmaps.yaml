@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,7 +7,7 @@ metadata:
   annotations:
     provi.repository: https://github.com/example/repo
   labels:
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 data:

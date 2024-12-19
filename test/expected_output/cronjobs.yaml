@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -10,7 +10,7 @@ metadata:
     test.override.annotation: hello-override-world
   labels:
     app: scheduler
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
     testOverrideLabel: hello-override-world
@@ -33,9 +33,9 @@ spec:
             test.annotation: hello-test-world
             test.override.annotation: hello-override-world
           labels:
-            selector: defaults-cronjob-scheduler
+            selector: my-cool-app-cronjob-scheduler
             app: scheduler
-            chart: defaults
+            chart: my-cool-app
             chartVersion: 1.0.0
             team: cool-team
             testOverrideLabel: hello-override-world

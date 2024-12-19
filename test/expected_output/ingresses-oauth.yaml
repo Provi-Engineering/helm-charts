@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,7 +12,7 @@ metadata:
     provi.repository: https://github.com/example/repo
     external-dns.alpha.kubernetes.io/ttl: "10"
   labels:
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:

@@ -1,6 +1,6 @@
 
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -12,7 +12,7 @@ metadata:
     provi.repository: https://github.com/example/repo
   labels:
     app: migrations
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 spec:
@@ -27,9 +27,9 @@ spec:
         helm.sh/hook-weight: "0"
         provi.repository: https://github.com/example/repo
       labels:
-        selector: defaults-job-migrations
+        selector: my-cool-app-job-migrations
         app: migrations
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: cool-team
     spec:
