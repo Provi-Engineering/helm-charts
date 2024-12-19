@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.6] - 2024-12-19
+
+### Added
+
+- You can include a `healthcheckProtocol` in the `ingresses` section, which will add the `alb.ingress.kubernetes.io/healthcheck-protocol` annotation to the Ingress.
+
 ## [1.8.5] - 2024-12-19
 
 ### Added
