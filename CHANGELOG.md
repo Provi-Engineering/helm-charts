@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.7] - 2024-12-23
+
+### Added
+
+- Added the `hostnameAliases` list for services to specify additional HTTP host headers that should be accepted  by the load balancer, e.g. if you have a CNAME alias to a domain in the hostnames list.
+
 ## [1.8.6] - 2024-12-19
 
 ### Added

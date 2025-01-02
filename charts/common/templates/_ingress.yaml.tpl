@@ -68,8 +68,12 @@
 
 {{- /* Set external-dns and Imperva-specific annotations */}}
 {{- $_ := set $finalAnnotations "external-dns.alpha.kubernetes.io/hostname" (join "," $hostnames) }}
-{{- if $v.imperva }}
-  {{- $_ := set $albAnnotations (printf "alb.ingress.kubernetes.io/conditions.%s" $v.service.name) (printf "[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"%s\"]}}]" (join "\",\"" $v.hostnames)) }}
+
+{{- $albHostnames := default list $v.hostnameAliases }}
+{{- /* Add host-header annotations whenever using imperva or additional hostname aliases */}}
+{{- if or $albHostnames $v.imperva }}
+  {{- $albHostnames = concat $v.hostnames $albHostnames }}
+  {{- $_ := set $albAnnotations (printf "alb.ingress.kubernetes.io/conditions.%s" $v.service.name) (printf "[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"%s\"]}}]" (join "\",\"" $albHostnames)) }}
 {{- end }}
 
 {{- $finalAnnotations = (mergeOverwrite $finalAnnotations $global.annotations $commonAnnotations $ingressesAnnotations $annotations) }}

@@ -153,3 +153,9 @@ teardown() {
   run helm template -f test/fixtures/ingresses/values-healthcheck-protocol.yaml test/fixtures/ingresses/
   assert_output --partial "alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS"
 }
+
+# bats test_tags=tag:alb-aliases
+@test "alb-aliases: sets alb host header annotations with hostnameAliases" {
+  run helm template -f test/fixtures/ingresses/values-alb-aliases.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/conditions.cool_foo_service: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"test-ingresses.example.com\",\"alias-subdomain1.example.com\",\"alias-subdomain2.example.com\"]}}]'"
+}
