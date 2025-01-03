@@ -1,5 +1,5 @@
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -9,11 +9,11 @@ metadata:
     eks.amazonaws.com/role-arn: "arn:aws:iam::123456789:role/test-podspec"
     eks.amazonaws.com/sts-regional-endpoints: "true"
   labels:
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
 kind: Service
 metadata:
@@ -22,12 +22,12 @@ metadata:
     provi.repository: https://github.com/example/repo
   labels:
     app: web
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: devops
 spec:
   selector:
-    selector: defaults-deployment-web
+    selector: my-cool-app-deployment-web
   type: ClusterIP
   ports:
     - name: http
@@ -35,7 +35,7 @@ spec:
       protocol: TCP
       targetPort: 8080
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,7 +45,7 @@ metadata:
     test.override.annotation: hello-override-world
   labels:
     app: web
-    chart: defaults
+    chart: my-cool-app
     chartVersion: 1.0.0
     team: devops
     testOverrideLabel: hello-override-world
@@ -53,7 +53,7 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      selector: defaults-deployment-web
+      selector: my-cool-app-deployment-web
   strategy:
     Recreate
   template:
@@ -62,9 +62,9 @@ spec:
         provi.repository: https://github.com/example/repo
         test.override.annotation: hello-override-world
       labels:
-        selector: defaults-deployment-web
+        selector: my-cool-app-deployment-web
         app: web
-        chart: defaults
+        chart: my-cool-app
         chartVersion: 1.0.0
         team: devops
         testOverrideLabel: hello-override-world
@@ -129,7 +129,7 @@ spec:
                     values:
                       - karpenter
 ---
-# Source: defaults/templates/microservice.yaml.tpl
+# Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

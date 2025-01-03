@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.8] - 2025-01-03
+
+### Added
+
+- Pod Disruption Budgets can be defined by adding a `podDisruptionBudget` to a deployment with `minAvailable` and `maxUnavailable` specified as described [in the Kubernetes documentation](https://kubernetes.io/docs/tasks/run-application/configure-pdb/).
+
 ## [1.8.7] - 2024-12-23
 
 ### Added

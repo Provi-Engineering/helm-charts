@@ -61,3 +61,26 @@ teardown() {
   assert_output --partial 'key: rds!cluster-1a123b45-6c78-901d-e234-f5678901a23b'
   assert_output --partial 'secretKey: MY_COOL_SECRET_1'
 }
+
+# bats test_tags=tag:pdb-min-available
+@test "deployments: renders podDisruptionBudget if included" {
+  run helm template -f test/fixtures/deployments/values-pdb-minAvailable.yaml test/fixtures/deployments/
+  assert_output --partial 'kind: PodDisruptionBudget'
+  assert_output --partial 'name: my-cool-app-web-pdb'
+  assert_output --partial 'app: my-cool-app-deployment-web'
+  assert_output --partial 'minAvailable: 1' 
+}
+
+# bats test_tags=tag:pdb-max-unavailable
+@test "deployments: renders podDisruptionBudget with maxUnavailable" {
+  run helm template -f test/fixtures/deployments/values-pdb-maxUnavailable.yaml test/fixtures/deployments/
+  assert_output --partial 'kind: PodDisruptionBudget'
+  assert_output --partial 'maxUnavailable: 2' 
+}
+
+# bats test_tags=tag:pdb-min-avail-percent
+@test "deployments: renders podDisruptionBudget with minAvailable as a percentage" {
+  run helm template -f test/fixtures/deployments/values-pdb-minAvailPercent.yaml test/fixtures/deployments/
+  assert_output --partial 'kind: PodDisruptionBudget'
+  assert_output --partial 'minAvailable: 25%' 
+}
