@@ -159,3 +159,41 @@ teardown() {
   run helm template -f test/fixtures/ingresses/values-alb-aliases.yaml test/fixtures/ingresses/
   assert_output --partial "alb.ingress.kubernetes.io/conditions.cool_foo_service: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"test-ingresses.example.com\",\"alias-subdomain1.example.com\",\"alias-subdomain2.example.com\"]}}]'"
 }
+
+# bats test_tags=tag:www-redirect
+@test "www-redirect: creates annotations to redirect base domain to www" {
+  run helm template -f test/fixtures/ingresses/values-redirect-to-www.yaml test/fixtures/ingresses/
+  assert_output --partial "alb.ingress.kubernetes.io/conditions.rule-redirect-www: '[{\"Field\":\"host-header\",\"HostHeaderConfig\":{\"Values\":[\"example.com\"]}}]'"
+  assert_output --partial "alb.ingress.kubernetes.io/actions.rule-redirect-www: '{\"Type\":\"redirect\",\"RedirectConfig\":{\"Host\":\"www.example.com\",\"Port\":\"443\",\"Protocol\":\"HTTPS\",\"StatusCode\":\"HTTP_301\"}}'"
+
+  # check that subdomain.example.com is unchanged
+  assert_output --partial "
+  rules:
+    - host: \"subdomain.example.com\"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 8080
+    - host: \"www.example.com\"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rule-redirect-www
+                port:
+                  name: use-annotation"
+}
