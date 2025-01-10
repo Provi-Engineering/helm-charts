@@ -91,7 +91,7 @@
 {{- $wwwRedirect := "" }}
 {{- if hasKey $v "redirectHostToWWW" }}
   {{- if ne $v.ingressClass "alb" }}
-    {{- $_ := required (printf "www redirect is only supported for ALB ingresses") $appDomain }}
+    {{- $_ := required (printf "www redirect is only supported for ALB ingresses") }}
   {{- end }}
   {{- $wwwRedirect = printf "www.%s" $v.redirectHostToWWW }}
   {{- if $v.imperva }}
