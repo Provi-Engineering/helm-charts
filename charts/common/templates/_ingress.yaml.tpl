@@ -88,6 +88,17 @@
   {{- $_ := required (printf "You must specify rootDomain in the ingress or global section") $rootDomain }}
 {{- end }}
 
+{{- $wwwRedirect := "" }}
+{{- if hasKey $v "redirectHostToWWW" }}
+  {{- if ne $v.ingressClass "alb" }}
+    {{- $_ := required (printf "www redirect is only supported for ALB ingresses") $appDomain }}
+  {{- end }}
+  {{- $wwwRedirect = printf "www.%s" $v.redirectHostToWWW }}
+  {{- if $v.imperva }}
+    {{- $wwwRedirect = printf "origin-%s" $wwwRedirect }}
+  {{- end }}
+{{- end }}
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -103,6 +114,10 @@ metadata:
     {{- end }}
     {{- if and (hasKey $.root.Values "spec" ) (hasKey $.root.Values.spec "clusterName") }}
     external-dns.alpha.kubernetes.io/set-identifier: {{ $.root.Values.spec.clusterName }}
+    {{- end }}
+    {{- if $wwwRedirect }}
+    alb.ingress.kubernetes.io/actions.rule-redirect-www: '{"Type":"redirect","RedirectConfig":{"Host":"www.{{ $v.redirectHostToWWW }}","Port":"443","Protocol":"HTTPS","StatusCode":"HTTP_301"}}'
+    alb.ingress.kubernetes.io/conditions.rule-redirect-www: '[{"Field":"host-header","HostHeaderConfig":{"Values":["{{ $v.redirectHostToWWW }}"]}}]'
     {{- end }}
   labels:
     {{- include "common.helper.labels" (dict "global" $global.labels "override" $v.labels) | nindent 4 }}
@@ -120,6 +135,15 @@ spec:
                 name: {{ $v.service.name }}
                 port:
                   number: {{ $v.service.port }}
+      {{- if and $wwwRedirect (eq $wwwRedirect $entry) }}
+          - path: /
+            pathType: {{ $v.pathType | default "Prefix" }}
+            backend:
+              service:
+                name: rule-redirect-www
+                port:
+                  name: use-annotation
+      {{- end }}
     {{- end }}
 {{- end }}
 {{- end }}

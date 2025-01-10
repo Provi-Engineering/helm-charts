@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.9] - 2025-01-10
+
+### Added
+
+- A service can specify that its base domain should redirect to a www. domain by adding the `redirectHostToWWW` key with the base domain as the value. e.g. if your hostnames list includes www.example.com you can specify `redirectHostToWWW: example.com` in order to set the ALB rules to do this. At the moment this is only supported for one hostname per service definition.
+
 ## [1.8.8] - 2025-01-03
 
 ### Added
