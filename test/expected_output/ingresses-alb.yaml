@@ -18,7 +18,6 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
     provi.repository: https://github.com/example/repo
     provi.slack: my-cool-team
-    external-dns.alpha.kubernetes.io/ttl: "10"
   labels:
     chart: my-cool-app
     chartVersion: 1.0.0

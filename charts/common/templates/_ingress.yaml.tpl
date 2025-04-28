@@ -106,7 +106,9 @@ metadata:
   name: {{ $k }}
   annotations:
     {{- toYaml $finalAnnotations | nindent 4}}
+    {{- if ne $v.ingressClass "alb" }}
     external-dns.alpha.kubernetes.io/ttl: "10"
+    {{- end }}
     {{- if and (hasKey $.root.Values "spec" ) (hasKey $.root.Values.spec "ingress") }}
     {{- if (hasKey $.root.Values.spec.ingress "route53_weight") }}
     external-dns.alpha.kubernetes.io/aws-weight: "{{ $.root.Values.spec.ingress.route53_weight }}"

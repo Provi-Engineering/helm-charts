@@ -2,6 +2,6 @@ apiVersion: v2
 description: Common service chart
 name: common
 type: library
-version: 1.8.9
+version: 1.8.10
 maintainers:
   - name: DevOps
