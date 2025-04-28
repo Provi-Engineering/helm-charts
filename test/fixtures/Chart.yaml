@@ -6,4 +6,4 @@ version: 1.0.0
 dependencies:
   - name: common
     repository: file://../../../charts/common
-    version: "1.8.9"
+    version: "1.8.10"

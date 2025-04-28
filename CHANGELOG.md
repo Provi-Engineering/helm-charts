@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.10] - 2025-04-28
+
+### Fixed
+
+- ALB Ingresses which have the `ttl` annotation (`external-dns.alpha.kubernetes.io/ttl`) will keep triggering external-dns to modify the records, but nothing actually happens, which is a waste of resources and adds unnecessary logging.
+
 ## [1.8.9] - 2025-01-10
 
 ### Added
