@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.11] - 2025-06-12
+
+### Fixed
+
+- The Pod Disruption Template used `app` as the matchLabels selector, but the selector used by Deployments and all the various resources is `selector`. This aligns PDBs with the rest of the resources.
+
 ## [1.8.10] - 2025-04-28
 
 ### Fixed
