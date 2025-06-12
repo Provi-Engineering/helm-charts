@@ -13,5 +13,5 @@ spec:
 {{- end }}
   selector:
     matchLabels:
-      app: {{ .selector }}
+      selector: {{ .selector }}
 {{- end }}

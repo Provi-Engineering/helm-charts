@@ -67,7 +67,7 @@ teardown() {
   run helm template -f test/fixtures/deployments/values-pdb-minAvailable.yaml test/fixtures/deployments/
   assert_output --partial 'kind: PodDisruptionBudget'
   assert_output --partial 'name: my-cool-app-web-pdb'
-  assert_output --partial 'app: my-cool-app-deployment-web'
+  assert_output --partial 'selector: my-cool-app-deployment-web'
   assert_output --partial 'minAvailable: 1' 
 }
 
