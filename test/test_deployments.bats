@@ -89,4 +89,5 @@ teardown() {
 @test "deployments: ensures a separate document between all deployments when PDBs are defined" {
   run helm template -f test/fixtures/deployments/values-multiple-deployments.yaml test/fixtures/deployments/
   refute_output --partial 'karpenter---'
+  assert_output --partial 'maxUnavailable: 0'
 }

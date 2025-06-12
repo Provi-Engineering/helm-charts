@@ -92,7 +92,7 @@ deployments:
       enabled: true
     replicas: 1
     podDisruptionBudget:
-      maxUnavailable: 0
+      maxUnavailable: "0"
     pod:
       affinity:
         type: karpenter
