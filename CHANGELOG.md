@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.12] - 2025-06-12
+
+### Fixed
+
+- If there are multiple deployments defined and the second (or any subsequent after the first) deployment has a `podDisruptionBudget` defined, then the template does not put a newline after each deployment, thereby not creating a separate document (because there needs to be a `---` on its own line in Yaml to separate documents), and thereby causing less than all of your deployments to be created.
+
 ## [1.8.11] - 2025-06-12
 
 ### Fixed

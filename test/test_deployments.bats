@@ -84,3 +84,9 @@ teardown() {
   assert_output --partial 'kind: PodDisruptionBudget'
   assert_output --partial 'minAvailable: 25%' 
 }
+
+# bats test_tags=tag:pdb-multi-deployment-rendering
+@test "deployments: ensures a separate document between all deployments when PDBs are defined" {
+  run helm template -f test/fixtures/deployments/values-multiple-deployments.yaml test/fixtures/deployments/
+  refute_output --partial 'karpenter---'
+}

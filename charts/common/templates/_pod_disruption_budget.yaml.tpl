@@ -1,4 +1,4 @@
-{{- define "common.kubernetes.pod_disruption_budget" -}}
+{{- define "common.kubernetes.pod_disruption_budget" }}
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
