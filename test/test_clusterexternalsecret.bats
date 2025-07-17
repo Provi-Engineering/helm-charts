@@ -18,7 +18,7 @@ teardown() {
   run helm template -f test/fixtures/clusterexternalsecret/values-basic.yaml test/fixtures/clusterexternalsecret/
   assert_output --partial 'kind: ClusterExternalSecret'
   assert_output --partial 'helm.sh/hook: pre-install,pre-upgrade'
-  assert_output --partial 'argocd.argoproj.io/hook: PreSync'
+  refute_output --partial 'argocd.argoproj.io/hook: PreSync'
 }
 
 # bats test_tags=tag:basic

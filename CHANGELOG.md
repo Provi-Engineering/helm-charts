@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.13] - 2025-07-17
+
+### Fixed
+
+- Removes the `argocd.argoproj.io/hook: PreSync` annotation from the cluster-scoped `ClusterExternalSecret` manifests, since it can cause errors rendering the JSON used internally by ArgoCD.
+
 ## [1.8.12] - 2025-06-12
 
 ### Fixed
