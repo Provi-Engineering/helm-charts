@@ -177,14 +177,16 @@ function main() {
           if [ "${DRY_RUN}" == "true" ]; then
             echo "   DRY_RUN: new file contents:"
             yq -e ".dependencies[0].version = \"${TO_VERSION}\"" "$CHART"
+            echo "   DRY_RUN: would have run: helm dep up $(dirname $CHART)"
           else
             yq -e -i ".dependencies[0].version = \"${TO_VERSION}\"" "$CHART"
+            helm dep up $(dirname "$CHART")
           fi
 
           if [ "${DRY_RUN}" == "true" ]; then
-            echo "   DRY_RUN: would have git-added ${CHART}'
+            echo "   DRY_RUN: would have git-added ${CHART} and possibly the lockfile"
           else
-            git add "$CHART"
+            git add .
           fi
           UPDATED=true
           break
