@@ -104,8 +104,8 @@ function make_branch() {
   fi
 }
 
-function checkout_main_branch() {
-  # checkout main branch if it's not
+function checkout_default_branch() {
+  # checkout default branch if it's not
   branch=$(git rev-parse --abbrev-ref HEAD)
 
   if [ "$branch" != "$DEFAULT_BRANCH" ] && [ "$branch" != "$BRANCH_NAME" ]; then
@@ -149,6 +149,8 @@ function main() {
 
     DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
 
+    checkout_default_branch
+
     # Find all Chart.yaml files (could be in charts/, helm/, etc.)
     CHART_FILES=$(find . -type f -name Chart.yaml)
 
@@ -180,7 +182,7 @@ function main() {
           fi
 
           if [ "${DRY_RUN}" == "true" ]; then
-            echo "   DRY_RUN: would have git-added ${CHART}"
+            echo "   DRY_RUN: would have git-added ${CHART}'
           else
             git add "$CHART"
           fi
