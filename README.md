@@ -24,6 +24,7 @@ Please refer to chart [develoment documentation](dev/README.md)
 See instructions in the [develoment documentation](dev/README.md). The upshot:
 * Update the `CHANGELOG.md`
 * Update the version in `common/Chart.yaml`
+* Run `. scripts/update-fixture-charts.sh <version>` (where `<version>` is the version you've updated to
 * PR your change
 * Merge
 
