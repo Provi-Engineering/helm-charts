@@ -19,7 +19,10 @@ jobs:
       - name: Install helm deps
         run: |
           helm dependency build "${GITHUB_WORKSPACE}/charts/common"
-
+      - name: Prepare fixture dependencies
+        run: |
+          COMMON_VERSION=$(awk -F': ' '/^version:/ {print $2}' charts/common/Chart.yaml)
+          bash scripts/update-fixture-charts.sh "$COMMON_VERSION"
       - name: Test
         run: |
           make test
