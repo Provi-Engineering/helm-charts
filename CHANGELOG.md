@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.14] - 2025-12-09
+
+### Added
+
+- In the `secrets` section, you can now specify `apiVersion` (defaulting to `v1beta1`) so that different versions of `external-secrets` can be run in different clusters.
+
 ## [1.8.13] - 2025-07-17
 
 ### Fixed

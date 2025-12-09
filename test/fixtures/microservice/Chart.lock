@@ -1,1 +1,6 @@
-../Chart.lock
+dependencies:
+- name: common
+  repository: file://../../../charts/common
+  version: 1.8.14
+digest: sha256:de94060bb3dafbe6e9212146d0f2650af4dde6978595f2b8c58f24fdc587398a
+generated: "2025-12-09T13:08:22.532401-06:00"

@@ -1,0 +1,34 @@
+global:
+  awsAccountId: "123456789"
+  image: docker.io/image:abcd1234
+  annotations:
+    provi.repository: https://github.com/example/repo
+  labels:
+    team: cool-team
+
+secrets:
+  mycoolservice:
+    apiVersion: v1
+    k8sSecretName: mycoolservice
+    awsSecretName: mycoolservice
+    namespace: mycoolservice
+    refreshTime: "1m"
+    refreshInterval: "1h"
+    secretStoreRef:
+      name: "aws-store"
+    secretKeys:
+      - MY_COOL_SECRET_1
+      - MY_COOL_SECRET_2
+      - MY_COOL_SECRET_3
+  mycooldb:
+    apiVersion: v1
+    k8sSecretName: mycooldb
+    awsSecretName: 'rds!cluster-1a123b45-6c78-901d-e234-f5678901a23b'
+    namespace: mycoolservice
+    refreshTime: "1m"
+    refreshInterval: "1h"
+    secretStoreRef:
+      name: "aws-store"
+    secretKeys:
+      - username
+      - password

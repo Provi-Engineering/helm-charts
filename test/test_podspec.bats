@@ -4,8 +4,6 @@ setup() {
   load 'test_helper/bats-assert/load'
   load 'test_helper/bats-file/load'
 
-  AWS_PROFILE=provi-development helm dep update test/fixtures/podspec &> /dev/null
-
   TEST_TEMP_DIR="$(temp_make)"
 }
 

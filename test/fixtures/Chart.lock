@@ -1,6 +1,0 @@
-dependencies:
-- name: common
-  repository: file://../../../charts/common
-  version: 1.8.13
-digest: sha256:71261c8474316d62b11c0eb7ae12dbfbc2612fdd3d408fa8803f8f18211dc37e
-generated: "2025-07-17T14:47:40.803494-05:00"

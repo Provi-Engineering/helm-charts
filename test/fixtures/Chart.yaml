@@ -1,9 +1,0 @@
-apiVersion: v2
-name: my-cool-app
-description: Defaults chart for testing
-type: application
-version: 1.0.0
-dependencies:
-  - name: common
-    repository: file://../../../charts/common
-    version: "1.8.13"

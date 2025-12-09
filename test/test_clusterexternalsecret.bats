@@ -4,8 +4,6 @@ setup() {
   load 'test_helper/bats-assert/load'
   load 'test_helper/bats-file/load'
 
-  AWS_PROFILE=provi-development helm dep update test/fixtures/clusterexternalsecret &> /dev/null
-
   TEST_TEMP_DIR="$(temp_make)"
 }
 
@@ -25,4 +23,11 @@ teardown() {
 @test "clusterexternalsecret: matches expected output" {
   helm template -f test/fixtures/clusterexternalsecret/values-basic.yaml test/fixtures/clusterexternalsecret/ > "$TEST_TEMP_DIR/default_output.yaml"
   assert diff -ub test/expected_output/clusterexternalsecret-basic.yaml "$TEST_TEMP_DIR/default_output.yaml"
+}
+
+# bats test_tags=tag:apiversion
+@test "clusterexternalsecret: allows overriding apiVersion" {
+  run helm template -f test/fixtures/clusterexternalsecret/values-apiversion-v1.yaml test/fixtures/clusterexternalsecret/
+  assert_success
+  assert_output --partial 'apiVersion: external-secrets.io/v1'
 }
