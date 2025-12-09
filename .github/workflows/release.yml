@@ -42,11 +42,8 @@ jobs:
       - name: Install Helm
         run: |
           apt-get update
-          apt-get -y install apt-transport-https ca-certificates curl gpg
-          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
-          apt-get update
-          apt-get -y install helm
+          apt-get -y install curl
+          curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
       - name: Snyk IAC test
         env:
