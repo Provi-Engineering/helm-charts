@@ -1,9 +1,36 @@
 #!/usr/bin/env bash
+
+initial_errexit_state=$(set -o | awk '$1=="errexit" {print $2}')
+initial_pipefail_state=$(set -o | awk '$1=="pipefail" {print $2}')
+initial_nounset_state=$(set -o | awk '$1=="nounset" {print $2}')
+
 set -o errexit
-set -o nounset
 set -o pipefail
+set -o nounset
+
+restore_shellopts() {
+  if [[ "$initial_errexit_state" == "off" ]]; then
+    set +e
+  else
+    set -e
+  fi
+
+  if [[ "$initial_pipefail_state" == "off" ]]; then
+    set +o pipefail
+  else
+    set -o pipefail
+  fi
+
+  if [[ "$initial_nounset_state" == "off" ]]; then
+    set +u
+  else
+    set -u
+  fi
+}
+trap restore_shellopts EXIT
 
 if [[ $# -ne 1 ]]; then
+
   echo "Usage: $0 <common_chart_version>" >&2
   exit 1
 fi
