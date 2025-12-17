@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.15] - 2025-12-17
+
+### Added
+
+- Add a `create` option to service accounts to support multiple apps running in a remote Garden environment.
+
 ## [1.8.14] - 2025-12-09
 
 ### Added

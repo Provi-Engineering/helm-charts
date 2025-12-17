@@ -14,7 +14,9 @@
 
 {{- if not $global.serviceAccount }}
 {{- with $statefulSetDetails.serviceAccount }}
+{{- if ne .create false }}
 {{ include "common.kubernetes.serviceaccount" (dict "global" $global "selector" $selector "serviceAccount" .) }}
+{{- end }}
 {{- end }}
 {{- end }}
 
