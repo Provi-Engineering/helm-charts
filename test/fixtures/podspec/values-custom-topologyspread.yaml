@@ -1,5 +1,5 @@
 global:
-  awsAccountId: 123456789
+  awsAccountId: "123456789"
   image: docker.io/image:abcd1234
   annotations:
     provi.repository: https://github.com/example/repo
@@ -7,7 +7,7 @@ global:
     team: cool-team
   appDomain: test-app-domain
   serviceAccount:
-    name: test-deployments
+    name: test-podspec
   env:
     RAILS_ENV: staging
 
@@ -34,14 +34,27 @@ deployments:
     pod:
       affinity:
         type: karpenter
-      defaultTopologySpreadConstraints:
-        matchLabels:
-          app.kubernetes.io/name: test-deployments
+      topologySpreadConstraints:
+        - maxSkew: 2
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: test-podspec
+        - maxSkew: 3
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values:
+                  - web
       containers:
         app:
           envFrom:
             - secretRef:
-                name: test-deployments
+                name: test-podspec
           resources:
             requests:
               memory: 256Mi

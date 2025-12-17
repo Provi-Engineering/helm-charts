@@ -82,14 +82,15 @@ spec:
               memory: 256Mi
               ephemeral-storage: 200Mi
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2

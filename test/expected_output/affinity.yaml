@@ -6,7 +6,7 @@ metadata:
   name: web
   annotations:
     provi.repository: https://github.com/example/repo
-    provi.slack: my-cool-team 
+    provi.slack: my-cool-team
   labels:
     app: web
     app.kubernetes.io/name: dummy
@@ -86,12 +86,21 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: foo
-                    operator: In
-                    values:
-                      - bar
-                  - key: type
-                    operator: In
-                    values:
-                      - testaffinity
+            - matchExpressions:
+              - key: foo
+                operator: In
+                values:
+                - bar
+              - key: type
+                operator: In
+                values:
+                - testaffinity
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname

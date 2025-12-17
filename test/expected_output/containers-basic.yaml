@@ -116,8 +116,17 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+            - matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - karpenter
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname

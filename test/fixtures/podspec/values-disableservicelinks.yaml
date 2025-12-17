@@ -35,8 +35,7 @@ deployments:
       disableServiceLinks: true
       affinity:
         type: karpenter
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: test-podspec
       containers:

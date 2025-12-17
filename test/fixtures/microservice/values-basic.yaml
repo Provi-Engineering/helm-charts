@@ -40,8 +40,7 @@ deployments:
     pod:
       affinity:
         type: karpenter
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy
       containers:
@@ -80,8 +79,7 @@ statefulSets:
       enabled: true
     replicas: 1
     pod:
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy
       containers:

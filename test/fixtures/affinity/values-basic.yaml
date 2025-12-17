@@ -20,8 +20,7 @@ deployments:
       affinity:
         type: testaffinity
         foo: bar
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy
       containers:

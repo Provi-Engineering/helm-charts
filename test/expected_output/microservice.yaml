@@ -172,11 +172,20 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+            - matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - karpenter
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2
@@ -277,14 +286,15 @@ spec:
             - mountPath: /data
               name: data
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -361,14 +371,15 @@ spec:
                   cpu: 100m
                   memory: 256Mi
           affinity:
-            nodeAffinity:
+            podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                  - matchExpressions:
-                      - key: type
-                        operator: In
-                        values:
-                          - karpenter
+              - labelSelector:
+                  matchExpressions:
+                  - key: karpenter.sh/controller
+                    operator: In
+                    values:
+                    - "true"
+                topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: networking.k8s.io/v1
@@ -476,11 +487,12 @@ spec:
               cpu: 100m
               memory: 256Mi
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname

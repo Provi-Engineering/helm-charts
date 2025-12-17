@@ -11,8 +11,7 @@ deployments:
     pod:
       affinity:
         type: karpenter
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: test-deployments
       initContainers:

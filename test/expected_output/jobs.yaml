@@ -54,11 +54,12 @@ spec:
               cpu: 100m
               memory: 256Mi
       affinity:
-        nodeAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: type
-                    operator: In
-                    values:
-                      - karpenter
+          - labelSelector:
+              matchExpressions:
+              - key: karpenter.sh/controller
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname

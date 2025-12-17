@@ -20,8 +20,7 @@ deployments:
       minReplicas: 3
       maxReplicas: 6
     pod:
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy
       containers:

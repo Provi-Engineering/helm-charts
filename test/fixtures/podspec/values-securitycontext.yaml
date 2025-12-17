@@ -38,8 +38,7 @@ deployments:
         fsGroup: 2000
       affinity:
         type: karpenter
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: test-podspec
       containers:

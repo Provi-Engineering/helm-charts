@@ -17,11 +17,12 @@ teardown() {
   assert_output --partial 'kind: CronJob'
   assert_output --partial 'test.annotation: hello-test-world'
 	assert_output --partial 'test.override.annotation: hello-override-world'
-	assert_output --partial 'testOverrideLabel: hello-override-world'
+  assert_output --partial 'testOverrideLabel: hello-override-world'
   assert_output --partial 'name: test-cronjobs'
-  assert_output --partial 'nodeAffinity'
+  assert_output --partial 'podAntiAffinity'
   assert_output --partial 'schedule: "0 * * * *"'
 }
+
 
 # bats test_tags=tag:cronjobs-basic
 @test "cronjobs: matches expected output" {

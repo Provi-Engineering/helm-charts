@@ -6,8 +6,9 @@
 {{- if .serviceAccount }}
   {{- $serviceAccount = .serviceAccount }}
 {{- end }}
-{{- if .pod.topologySpreadConstraints }}
-{{- include "common.kubernetes.topologyspreadconstraints" .pod }}
+{{- $topologySpreadConstraints := include "common.kubernetes.topologyspreadconstraints" .pod }}
+{{- if $topologySpreadConstraints }}
+{{ $topologySpreadConstraints }}
 {{- end }}
 {{- if .pod.imagePullSecretsName }}
 imagePullSecrets:
@@ -49,7 +50,10 @@ volumes:
 {{- end }}
 containers:
 {{- include "common.kubernetes.containers" (dict "root" $.root "global" $global "chart" $chart "containers" .pod.containers "isInitContainer" false) | trim | nindent 2 }}
+{{- $affinity := include "common.kubernetes.affinity" . }}
+{{- if $affinity }}
 affinity:
-{{- include "common.kubernetes.affinity" . | nindent 2 }}
+{{ $affinity | indent 2 }}
+{{- end }}
 {{- end }}
 {{- end }}

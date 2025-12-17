@@ -16,9 +16,12 @@ global:
 deployments:
   web:
     replicas: 3
-    autoscaling:
-      maxReplicas: 6
     pod:
+      affinity:
+        type: testaffinity
+        foo: bar
+      antiAffinityLabel:
+        my-cool-key: foo
       defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy

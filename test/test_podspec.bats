@@ -28,6 +28,27 @@ teardown() {
   assert diff -ub test/expected_output/podspec-basic.yaml "$TEST_TEMP_DIR/podspec-basic.yaml"
 }
 
+# bats test_tags=tag:podspec-topology-custom
+@test "podspec: allows overriding topologySpreadConstraints" {
+  run helm template -f test/fixtures/podspec/values-custom-topologyspread.yaml test/fixtures/podspec/
+  assert_output --partial 'topologyKey: kubernetes.io/hostname'
+  assert_output --partial 'whenUnsatisfiable: ScheduleAnyway'
+  assert_output --partial 'key: workload'
+}
+
+# bats test_tags=tag:podspec-topology-default-config
+@test "podspec: default topologySpreadConstraints can override whenUnsatisfiable" {
+  run helm template -f test/fixtures/podspec/values-default-topologyspread-config.yaml test/fixtures/podspec/
+  assert_output --partial 'whenUnsatisfiable: ScheduleAnyway'
+}
+
+# bats test_tags=tag:podspec-topology-legacy
+@test "podspec: legacy topologySpreadConstraints syntax fails" {
+  run helm template -f test/fixtures/podspec/badvalues-topologyspread-legacy.yaml test/fixtures/podspec/
+  assert_failure
+  assert_output --partial 'topologySpreadConstraints.matchLabels has moved to pod.defaultTopologySpreadConstraints.matchLabels'
+}
+
 # bats test_tags=tag:podspec-selector
 @test "podspec: specify the selector" {
   # TODO: fix this. Problem is that there's conditional logic around

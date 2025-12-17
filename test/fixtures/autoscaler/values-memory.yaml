@@ -22,8 +22,7 @@ deployments:
       targetMemoryUtilization: 60
       targetCPUUtilization: 50
     pod:
-      topologySpreadConstraints:
-        enabled: true
+      defaultTopologySpreadConstraints:
         matchLabels:
           app.kubernetes.io/name: dummy
       containers:
