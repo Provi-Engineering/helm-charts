@@ -4,6 +4,8 @@ This document explains how to work with our Git repository, how to choose the ri
 
 We maintain **multiple active release lines** (e.g. `1.8.x` and `1.9.x`) and use a `release/X.Y` branching pattern for long-lived maintenance branches.
 
+Pushing tags will trigger the Github Action which will package and release the chart.
+
 ---
 
 ## Table of Contents
