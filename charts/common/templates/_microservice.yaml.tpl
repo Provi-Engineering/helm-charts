@@ -12,7 +12,9 @@
 
 {{- /* When we want to use a single service account for all workloads */}}
 {{- with $global.serviceAccount }}
+{{- if ne .create false }}
 {{ include "common.kubernetes.serviceaccount" (dict "global" $global "serviceAccount" .) }}
+{{- end }}
 {{- end -}}
 
 {{- with .Values.deployments }}
