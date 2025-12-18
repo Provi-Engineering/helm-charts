@@ -36,5 +36,5 @@ teardown() {
 # bats test_tags=tag:affinity-disabled
 @test "affinity: allows disabling automatic anti-affinity" {
   run helm template -f test/fixtures/affinity/values-anti-affinity-disabled.yaml test/fixtures/affinity/
-  refute_output --partial 'podAntiAffinity'
+  refute_output --partial 'karpenter.sh/controller'
 }

@@ -16,7 +16,7 @@ teardown() {
   run helm template -f test/fixtures/jobs/values-basic.yaml test/fixtures/jobs/
   assert_output --partial 'kind: Job'
   assert_output --partial 'helm.sh/hook: pre-install,pre-upgrade'
-  assert_output --partial 'podAntiAffinity'
+  assert_output --partial 'nodeAffinity'
 }
 
 # bats test_tags=tag:basic

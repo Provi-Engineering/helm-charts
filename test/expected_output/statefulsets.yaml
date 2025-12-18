@@ -106,15 +106,14 @@ spec:
             - mountPath: /data
               name: data
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            nodeSelectorTerms:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname
   volumeClaimTemplates:
     - metadata:
         name: data

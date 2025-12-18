@@ -121,12 +121,8 @@ spec:
                 operator: In
                 values:
                 - karpenter
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname

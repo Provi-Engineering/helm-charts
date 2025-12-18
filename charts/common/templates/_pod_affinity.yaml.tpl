@@ -24,28 +24,32 @@
 {{- else if $rawAffinity }}
   {{- fail "pod.affinity must be provided as a map" }}
 {{- end }}
-{{- $antiAffinityDisabled := default false .pod.antiAffinityDisabled }}
-{{- if not $antiAffinityDisabled }}
-  {{- $labelConfig := .pod.antiAffinityLabel | default (dict "karpenter.sh/controller" "true") }}
+{{- $nodeAffinityDisabled := default false .pod.antiAffinityDisabled }}
+{{- if not $nodeAffinityDisabled }}
+  {{- $labelConfig := coalesce .pod.nodeAffinityLabel .pod.antiAffinityLabel (dict "karpenter.sh/controller" "true") }}
   {{- $matchExpressions := list }}
   {{- range $labelKey, $labelValue := $labelConfig }}
     {{- if ne $labelValue nil }}
-      {{- $matchExpressions = append $matchExpressions (dict "key" $labelKey "operator" "In" "values" (list (printf "%v" $labelValue))) }}
+      {{- $matchExpressions = append $matchExpressions (dict "key" $labelKey "operator" "NotIn" "values" (list (printf "%v" $labelValue))) }}
     {{- end }}
   {{- end }}
   {{- if gt (len $matchExpressions) 0 }}
-    {{- $term := dict "labelSelector" (dict "matchExpressions" $matchExpressions) "topologyKey" "kubernetes.io/hostname" }}
-    {{- $podAntiAffinity := dict }}
-    {{- if hasKey $affinity "podAntiAffinity" }}
-      {{- $podAntiAffinity = deepCopy (get $affinity "podAntiAffinity") }}
+    {{- $nodeAffinity := dict }}
+    {{- if hasKey $affinity "nodeAffinity" }}
+      {{- $nodeAffinity = deepCopy (get $affinity "nodeAffinity") }}
     {{- end }}
-    {{- $required := list }}
-    {{- if hasKey $podAntiAffinity "requiredDuringSchedulingIgnoredDuringExecution" }}
-      {{- $required = deepCopy (get $podAntiAffinity "requiredDuringSchedulingIgnoredDuringExecution") }}
+    {{- $required := dict }}
+    {{- if hasKey $nodeAffinity "requiredDuringSchedulingIgnoredDuringExecution" }}
+      {{- $required = deepCopy (get $nodeAffinity "requiredDuringSchedulingIgnoredDuringExecution") }}
     {{- end }}
-    {{- $required = append $required $term }}
-    {{- $_ := set $podAntiAffinity "requiredDuringSchedulingIgnoredDuringExecution" $required }}
-    {{- $_ := set $affinity "podAntiAffinity" $podAntiAffinity }}
+    {{- $nodeSelectorTerms := list }}
+    {{- if hasKey $required "nodeSelectorTerms" }}
+      {{- $nodeSelectorTerms = deepCopy (get $required "nodeSelectorTerms") }}
+    {{- end }}
+    {{- $nodeSelectorTerms = append $nodeSelectorTerms (dict "matchExpressions" $matchExpressions) }}
+    {{- $_ := set $required "nodeSelectorTerms" $nodeSelectorTerms }}
+    {{- $_ := set $nodeAffinity "requiredDuringSchedulingIgnoredDuringExecution" $required }}
+    {{- $_ := set $affinity "nodeAffinity" $nodeAffinity }}
   {{- end }}
 {{- end }}
 {{- if gt (len $affinity) 0 }}

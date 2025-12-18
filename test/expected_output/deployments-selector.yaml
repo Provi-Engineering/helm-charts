@@ -121,15 +121,11 @@ spec:
                 operator: In
                 values:
                 - karpenter
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2

@@ -177,15 +177,11 @@ spec:
                 operator: In
                 values:
                 - karpenter
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2
@@ -286,15 +282,14 @@ spec:
             - mountPath: /data
               name: data
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            nodeSelectorTerms:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -371,15 +366,14 @@ spec:
                   cpu: 100m
                   memory: 256Mi
           affinity:
-            podAntiAffinity:
+            nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
+                nodeSelectorTerms:
+                - matchExpressions:
                   - key: karpenter.sh/controller
-                    operator: In
+                    operator: NotIn
                     values:
                     - "true"
-                topologyKey: kubernetes.io/hostname
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: networking.k8s.io/v1
@@ -487,12 +481,11 @@ spec:
               cpu: 100m
               memory: 256Mi
       affinity:
-        podAntiAffinity:
+        nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
+            nodeSelectorTerms:
+            - matchExpressions:
               - key: karpenter.sh/controller
-                operator: In
+                operator: NotIn
                 values:
                 - "true"
-            topologyKey: kubernetes.io/hostname

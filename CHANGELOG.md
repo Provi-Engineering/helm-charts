@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.9.0] - 2025-12-17
+## [1.9.0] - 2025-12-18
 
 ### Added
 
-- Pods now include a default `podAntiAffinity` targeting `karpenter.sh/controller: "true"`, with new `antiAffinityLabel` and `antiAffinityDisabled` controls plus support for merging with caller-provided affinity rules.
+- Pods now include a default `nodeAffinity` to ensure pods do not get scheduled on nodes labeled `karpenter.sh/controller: "true"`, with new `antiAffinityLabel` and `antiAffinityDisabled` controls plus support for merging with caller-provided affinity rules.
 - Replaced the legacy `pod.topologySpreadConstraints.matchLabels` defaults with `pod.defaultTopologySpreadConstraints`, added a configurable `whenUnsatisfiable`, and allow callers to provide full `topologySpreadConstraints` lists with validation for required fields.
 - Includes `CONTRIBUTING.md` doc for help on creating patch releases for the 1.8.x series, which is required until all apps are deployed to new clusters.
 
