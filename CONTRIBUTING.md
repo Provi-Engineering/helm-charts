@@ -181,6 +181,8 @@ We use **Semantic Versioning**: `MAJOR.MINOR.PATCH` (e.g. `1.8.1`).
     # Update version metadata in the codebase to 1.8.1 (if applicable)
     git commit -am "Bump version to 1.8.1"
 
+    # PR / merge
+
     git tag -a v1.8.1 -m "Release 1.8.1"
     git push origin release/1.8
     git push origin v1.8.1
