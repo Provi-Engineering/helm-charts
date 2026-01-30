@@ -31,3 +31,17 @@ teardown() {
   assert_success
   assert_output --partial 'apiVersion: external-secrets.io/v1'
 }
+#
+# bats test_tags=tag:datafrom
+@test "clusterexternalsecret: if secretKeys are not defined, use all keys from the secret (via dataFrom)" {
+  run helm template -f test/fixtures/clusterexternalsecret/values-datafrom.yaml test/fixtures/clusterexternalsecret/
+  assert_success
+  assert_output --partial 'dataFrom:'
+}
+
+
+# bats test_tags=tag:datafrom
+@test "clusterexternalsecret: if secretKeys are not defined, matches expected output" {
+  helm template -f test/fixtures/clusterexternalsecret/values-datafrom.yaml test/fixtures/clusterexternalsecret/ > "$TEST_TEMP_DIR/default_output.yaml"
+  assert diff -ub test/expected_output/clusterexternalsecret-datafrom.yaml "$TEST_TEMP_DIR/default_output.yaml"
+}
