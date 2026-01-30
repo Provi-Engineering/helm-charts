@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.16] - 2026-01-30
+
+### Changed
+
+- When one omits the `secretKeys` mapping from a secret in the `secrets:` section, the `external-secrets` controller will extract all the key/value pairs from the AWS Secretsmanager secret. This avoids the problem of forgetting to include one of the keys when defining the secret, or when adding or removing keys in the Secretsmanager secret.
+
 ## [1.8.15] - 2025-12-17
 
 ### Added
