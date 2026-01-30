@@ -24,6 +24,7 @@ spec:
     target:
       name: {{ .k8sSecretName }}
       creationPolicy: Owner
+    {{- if and .secretKeys (gt (len .secretKeys) 0) }}
     data:
     {{- range $secretKey := .secretKeys }}
     - secretKey: {{ $secretKey }}
@@ -33,6 +34,11 @@ spec:
         key: {{ $secretDetails.awsSecretName }}
         property: {{ $secretKey }}
     {{- end }}
+    {{- else }}
+    dataFrom:
+    - extract:
+        key: {{ $secretDetails.awsSecretName }}
+    {{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
