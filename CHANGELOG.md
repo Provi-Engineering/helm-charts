@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- INFRASEC-4510: maitred service decommissioned (workloads removed from provi-eks-workloads).
+
 ## [1.8.16] - 2026-01-30
 
 ### Changed
