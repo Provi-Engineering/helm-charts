@@ -35,7 +35,6 @@ REPOS=(
   "forklift"
   "happy-hour"
   "happy-hour-validation-service"
-  "maitred"
   "nysla"
   "pallet"
   "provi-devops"
