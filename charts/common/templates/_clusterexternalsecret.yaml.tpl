@@ -2,7 +2,7 @@
 {{- with .secrets }}
 {{- range $secretName, $secretDetails := . }}
 ---
-apiVersion: external-secrets.io/{{ default "v1beta1" .apiVersion }}
+apiVersion: external-secrets.io/{{ default "v1" .apiVersion }}
 kind: ClusterExternalSecret
 metadata:
   name: {{ .k8sSecretName }}
