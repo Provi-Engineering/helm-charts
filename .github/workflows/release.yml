@@ -45,11 +45,15 @@ jobs:
           apt-get -y install curl
           curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
+      - name: Prepare fixture dependencies
+        run: |
+          COMMON_VERSION=$(awk -F': ' '/^version:/ {print $2}' charts/common/Chart.yaml)
+          bash scripts/update-fixture-charts.sh "$COMMON_VERSION"
+
       - name: Snyk IAC test
         env:
           SNYK_TOKEN : ${{ secrets.SNYK_TOKEN }}
         run: |
-          helm dependency update ./test/fixtures/microservice/
           helm template -f ./test/fixtures/microservice/values-basic.yaml ./test/fixtures/microservice/ > ./output.yaml
           snyk iac test ./output.yaml
 
