@@ -112,10 +112,10 @@ metadata:
     {{- if and (hasKey $.root.Values "spec" ) (hasKey $.root.Values.spec "ingress") }}
     {{- if (hasKey $.root.Values.spec.ingress "route53_weight") }}
     external-dns.alpha.kubernetes.io/aws-weight: "{{ $.root.Values.spec.ingress.route53_weight }}"
-    {{- end }}
-    {{- end }}
-    {{- if and (hasKey $.root.Values "spec" ) (hasKey $.root.Values.spec "clusterName") }}
+    {{- if and (hasKey $.root.Values.spec "clusterName") }}
     external-dns.alpha.kubernetes.io/set-identifier: {{ $.root.Values.spec.clusterName }}
+    {{- end }}
+    {{- end }}
     {{- end }}
     {{- if $wwwRedirect }}
     alb.ingress.kubernetes.io/actions.rule-redirect-www: '{"Type":"redirect","RedirectConfig":{"Host":"www.{{ $v.redirectHostToWWW }}","Port":"443","Protocol":"HTTPS","StatusCode":"HTTP_301"}}'
