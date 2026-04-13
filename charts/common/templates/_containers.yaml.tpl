@@ -62,7 +62,9 @@
   {{- if (or (hasKey $probe "tcpSocket") (or (hasKey $probe "exec") (hasKey $probe "httpGet")))}}
   {{- with $probe }}
   livenessProbe:
-    initialDelaySeconds: {{ default 0 .initialDelaySeconds }}
+    {{- if .initialDelaySeconds }}
+    initialDelaySeconds: {{ .initialDelaySeconds }}
+    {{- end }}
     periodSeconds: {{ default 5 .periodSeconds }}
     timeoutSeconds: {{ default 1 .timeoutSeconds }}
     failureThreshold: {{ default 5 .failureThreshold }}
@@ -95,7 +97,9 @@
   {{- if (or (hasKey $probe "tcpSocket") (or (hasKey $probe "exec") (hasKey $probe "httpGet")))}}
   {{- with .details.readinessProbe }}
   readinessProbe:
-    initialDelaySeconds: {{ default 0 .initialDelaySeconds }}
+    {{- if .initialDelaySeconds }}
+    initialDelaySeconds: {{ .initialDelaySeconds }}
+    {{- end }}
     periodSeconds: {{ default 5 .periodSeconds }}
     timeoutSeconds: {{ default 1 .timeoutSeconds }}
     failureThreshold: {{ default 1 .failureThreshold }}

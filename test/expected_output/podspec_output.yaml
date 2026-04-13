@@ -103,7 +103,6 @@ spec:
             - secretRef:
                 name: test-podspec
           livenessProbe:
-            initialDelaySeconds: 0
             periodSeconds: 5
             timeoutSeconds: 1
             failureThreshold: 5
