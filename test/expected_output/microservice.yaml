@@ -163,9 +163,9 @@ spec:
             limits:
               memory: 256Mi
               ephemeral-storage: 200Mi
-              cpu: 1
+              cpu: "1"
             requests:
-              cpu: 250m
+              cpu: "250m"
               memory: 256Mi
               ephemeral-storage: 200Mi
       affinity:
@@ -269,9 +269,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-              cpu: 1
+              cpu: "1"
             requests:
-              cpu: 250m
+              cpu: "250m"
               memory: 256Mi
           volumeMounts:
             - mountPath: /data
@@ -356,9 +356,9 @@ spec:
               resources:
                 limits:
                   memory: 256Mi
-                  cpu: 1
+                  cpu: "1"
                 requests:
-                  cpu: 100m
+                  cpu: "100m"
                   memory: 256Mi
           affinity:
             nodeAffinity:
@@ -471,9 +471,9 @@ spec:
           resources:
             limits:
               memory: 256Mi
-              cpu: 1
+              cpu: "1"
             requests:
-              cpu: 100m
+              cpu: "100m"
               memory: 256Mi
       affinity:
         nodeAffinity:
