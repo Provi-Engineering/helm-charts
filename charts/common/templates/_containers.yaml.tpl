@@ -136,10 +136,10 @@
       ephemeral-storage: {{ $ephemeral_limits }}
       {{- end }}
       {{- if $cpu_limits}}
-      cpu: {{ $cpu_limits }}
+      cpu: "{{ $cpu_limits }}"
       {{- end }}
     requests:
-      cpu: {{ required $resourcesError $resources.requests.cpu }}
+      cpu: "{{ required $resourcesError $resources.requests.cpu }}"
       memory: {{ required $resourcesError $resources.requests.memory }}
       {{- if $ephemeral_requests }}
       ephemeral-storage: {{ $ephemeral_requests }}
