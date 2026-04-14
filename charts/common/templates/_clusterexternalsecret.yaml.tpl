@@ -6,10 +6,6 @@ apiVersion: external-secrets.io/{{ default "v1" .apiVersion }}
 kind: ClusterExternalSecret
 metadata:
   name: {{ .k8sSecretName }}
-  annotations:
-    helm.sh/hook: pre-install,pre-upgrade
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
-    helm.sh/hook-weight: "-2"
 spec:
   namespaceSelector:
     matchLabels:
