@@ -15,7 +15,8 @@ teardown() {
 @test "clusterexternalsecret: outputs a template" {
   run helm template -f test/fixtures/clusterexternalsecret/values-basic.yaml test/fixtures/clusterexternalsecret/
   assert_output --partial 'kind: ClusterExternalSecret'
-  refute_output --partial 'helm.sh/hook'
+  assert_output --partial 'helm.sh/hook: pre-install,pre-upgrade'
+  refute_output --partial 'hook-succeeded'
   refute_output --partial 'argocd.argoproj.io/hook: PreSync'
 }
 
