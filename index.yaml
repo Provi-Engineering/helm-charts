@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   common:
   - apiVersion: v2
+    created: "2026-04-27T20:53:45.39128635Z"
+    description: Common service chart
+    digest: 26b14388734ba6b6ddb906bbbca2b7e0d30da840552ccce4a1b69abe53c1806a
+    maintainers:
+    - name: DevOps
+    name: common
+    type: library
+    urls:
+    - https://github.com/Provi-Engineering/helm-charts/releases/download/common-1.8.24/common-1.8.24.tgz
+    version: 1.8.24
+  - apiVersion: v2
     created: "2026-04-14T23:03:17.742679878Z"
     description: Common service chart
     digest: 49eee8e35e485921988901f9f761893618ed8853021c3be3c32e50ff7490b7db
@@ -287,4 +298,4 @@ entries:
     urls:
     - https://github.com/Provi-Engineering/helm-charts/releases/download/common-1.7.5/common-1.7.5.tgz
     version: 1.7.5
-generated: "2026-04-14T23:03:17.74288292Z"
+generated: "2026-04-27T20:53:45.39155987Z"
