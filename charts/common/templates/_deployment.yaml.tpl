@@ -3,6 +3,7 @@
 
 {{- with .deployments }}
 {{- range $deploymentName, $deploymentDetails := . }}
+{{- $externalAutoscaler := $deploymentDetails.externalAutoscaler | default false }}
 
 {{- $global := deepCopy $.global }}
 {{- $_ :=  set $global.labels "app" $deploymentName }}
@@ -38,7 +39,7 @@ metadata:
   labels:
     {{- include "common.helper.labels" (dict "global" $global.labels "override" $deploymentDetails.labels) | nindent 4}}
 spec:
-  {{- if not $deploymentDetails.autoscaling }}
+  {{- if not (or $deploymentDetails.autoscaling $externalAutoscaler) }}
   replicas: {{ required (printf "You must set a replicas count for deployment [%s]" $deploymentName ) $deploymentDetails.replicas }}
   {{- end }}
   selector:
