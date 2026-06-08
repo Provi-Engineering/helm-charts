@@ -1,4 +1,5 @@
-{{- /* This provides topologySpreadConstraints to the pod spec. See: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/ */}}
+{{- /* Zone spread is a hard HA requirement; hostname spread is a soft preference so the
+     scheduler can bin-pack when resources allow (see AWS EKS HA guidance). */}}
 {{- define "common.kubernetes.topologyspreadconstraints" -}}
 topologySpreadConstraints:
 - maxSkew: 1
@@ -9,9 +10,9 @@ topologySpreadConstraints:
     {{- range $key, $val := .topologySpreadConstraints.matchLabels }}
       {{ $key }}: {{ $val | quote }}
     {{- end }}
-- maxSkew: 1
+- maxSkew: 2
   topologyKey: kubernetes.io/hostname
-  whenUnsatisfiable: DoNotSchedule
+  whenUnsatisfiable: ScheduleAnyway
   labelSelector:
     matchLabels:
     {{- range $key, $val := .topologySpreadConstraints.matchLabels }}

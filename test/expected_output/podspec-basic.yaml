@@ -75,9 +75,9 @@ spec:
         labelSelector:
           matchLabels:
             app.kubernetes.io/name: "test-podspec"
-      - maxSkew: 1
+      - maxSkew: 2
         topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
+        whenUnsatisfiable: ScheduleAnyway
         labelSelector:
           matchLabels:
             app.kubernetes.io/name: "test-podspec"

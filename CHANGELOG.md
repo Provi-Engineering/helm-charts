@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - INFRASEC-4510: maitred service decommissioned (workloads removed from provi-eks-workloads).
 
+## [1.8.25] - 2026-06-08
+
+### Changed
+
+- Hostname topology spread is now a soft preference (`maxSkew: 2`, `whenUnsatisfiable: ScheduleAnyway`) so the scheduler can bin-pack pods when node resources allow. Zone spread remains a hard requirement (`maxSkew: 1`, `whenUnsatisfiable: DoNotSchedule`).
+
 ## [1.8.16] - 2026-01-30
 
 ### Changed
