@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - INFRASEC-4510: maitred service decommissioned (workloads removed from provi-eks-workloads).
 
+## [1.8.26] - 2026-06-16
+
+### Added
+
+- `global.podDefaults` — optional cluster- or environment-level pod settings applied to every Deployment, StatefulSet, and Job pod when the workload does not already define `pod.tolerations` or `pod.affinity`. Intended for non-prod spot NodePool rollout via GitOps Bridge (`provi-eks-workloads` cluster `values.yaml`).
+
 ## [1.8.25] - 2026-06-08
 
 ### Changed
