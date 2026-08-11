@@ -195,3 +195,28 @@ teardown() {
                 port:
                   name: use-annotation"
 }
+
+# bats test_tags=tag:alb-group
+@test "alb-group: grouped ingresses share the group annotations and Name tag" {
+  run helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/
+  assert_output --partial 'alb.ingress.kubernetes.io/group.name: my-cool-group'
+  assert_output --partial 'alb.ingress.kubernetes.io/group.order: "10"'
+  assert_output --partial 'alb.ingress.kubernetes.io/group.order: "20"'
+  assert_output --partial 'alb.ingress.kubernetes.io/tags: Name=my-cool-group'
+  refute_output --partial 'alb.ingress.kubernetes.io/tags: Name=app-alb'
+  refute_output --partial 'alb.ingress.kubernetes.io/tags: Name=static-alb'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: extraPaths render before the default catch-all path" {
+  run helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/
+  assert_output --partial 'path: /api/*'
+  assert_output --partial 'path: /users/*'
+  assert_output --partial 'pathType: ImplementationSpecific'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: matches expected output" {
+  helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/ > "$TEST_TEMP_DIR/alb_group_output.yaml"
+  assert diff -ub test/expected_output/ingresses-alb-group.yaml "$TEST_TEMP_DIR/alb_group_output.yaml"
+}

@@ -25,6 +25,17 @@
 {{- $healthcheckPath := default "/health" $v.healthcheckPath }}
 {{- $healthcheckProtocol := default "HTTP" $v.healthcheckProtocol }}
 {{- $nameTag := printf "Name=%s-alb" $k }}
+{{- /* Ingress groups: members share one ALB. The Name tag is group-level
+       (conflicting tags make the controller refuse to build the group), so
+       grouped ingresses share the group name as their tag. */}}
+{{- with $v.group }}
+{{- $groupName := required (printf "You must specify group.name when group is set for ingress [%v]" $k) .name }}
+{{- $nameTag = printf "Name=%s" $groupName }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/group.name" $groupName }}
+{{- if hasKey . "order" }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/group.order" (printf "%v" .order) }}
+{{- end }}
+{{- end }}
 {{- $_ := required (printf $certArnErrorMessage $k) $v.certificateArn}}
 {{- $_ := required (printf $schemeErrorMessage $k) $v.scheme}}
 {{- if $v.imperva }}
@@ -130,6 +141,18 @@ spec:
     - host: "{{ $entry }}"
       http:
         paths:
+          {{- /* extraPaths render before the default catch-all: within an
+                 ingress, ALB rule order follows spec order, so specific
+                 paths must precede "/". */}}
+          {{- range $p := $v.extraPaths }}
+          - path: {{ required (printf "You must specify a path for every extraPaths entry of ingress [%v]" $k) $p.path }}
+            pathType: {{ $p.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ required (printf "You must specify a service with name and port for every extraPaths entry of ingress [%v]" $k) $p.service.name }}
+                port:
+                  number: {{ required (printf "You must specify a service with name and port for every extraPaths entry of ingress [%v]" $k) $p.service.port }}
+          {{- end }}
           - path: /
             pathType: {{ $v.pathType | default "Prefix" }}
             backend:

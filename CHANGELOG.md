@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- REX-2033: ALB ingress-group support — an optional `group:` (`name`, `order`) per ingress emits the `alb.ingress.kubernetes.io/group.name`/`group.order` annotations and makes grouped ingresses share `Name=<group.name>` as their ALB tag (the per-ingress `Name=<key>-alb` tag is a group-level conflict that stops the group from building). Also an optional `extraPaths:` list per ingress (`path`, `pathType` defaulting to `ImplementationSpecific`, `service.name`/`service.port`) rendered ahead of the default `/` path, so one hostname can carve specific paths to one service while another ingress in the group owns the catch-all. Both additive; omitting them renders byte-identical output to before.
+
 ### Removed
 
 - INFRASEC-4510: maitred service decommissioned (workloads removed from provi-eks-workloads).
