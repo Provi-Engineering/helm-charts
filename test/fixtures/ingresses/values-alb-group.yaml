@@ -23,6 +23,10 @@ ingresses:
     group:
       name: my-cool-group
       order: 10
+    # The carve member must not own the catch-all: the LBC orders Prefix
+    # paths ahead of ImplementationSpecific ones regardless of spec order,
+    # and within the group the lower order band wins.
+    omitDefaultPath: true
     extraPaths:
       - path: /api/*
         service:

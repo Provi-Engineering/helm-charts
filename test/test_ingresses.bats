@@ -208,11 +208,28 @@ teardown() {
 }
 
 # bats test_tags=tag:alb-group
-@test "alb-group: extraPaths render before the default catch-all path" {
+@test "alb-group: the carve member renders only its extraPaths, the catch-all member owns /" {
   run helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/
   assert_output --partial 'path: /api/*'
   assert_output --partial 'path: /users/*'
   assert_output --partial 'pathType: ImplementationSpecific'
+  # exactly one "- path: /" across the group: the omitDefaultPath member must not
+  # emit the catch-all (a Prefix "/" outranks every ImplementationSpecific carve)
+  [ "$(echo "$output" | grep -c 'path: /$')" -eq 1 ]
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: group.name is required when group is set" {
+  run helm template -f test/fixtures/ingresses/badvalues-alb-group-no-name.yaml test/fixtures/ingresses/
+  assert_failure
+  assert_output --partial 'You must specify group.name when group is set for ingress [dummy]'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: omitDefaultPath without extraPaths fails" {
+  run helm template -f test/fixtures/ingresses/badvalues-omitdefaultpath-no-extrapaths.yaml test/fixtures/ingresses/
+  assert_failure
+  assert_output --partial 'omitDefaultPath requires at least one extraPaths entry for ingress [dummy]'
 }
 
 # bats test_tags=tag:alb-group

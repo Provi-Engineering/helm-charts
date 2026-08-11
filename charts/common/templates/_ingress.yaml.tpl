@@ -141,9 +141,18 @@ spec:
     - host: "{{ $entry }}"
       http:
         paths:
-          {{- /* extraPaths render before the default catch-all: within an
-                 ingress, ALB rule order follows spec order, so specific
-                 paths must precede "/". */}}
+          {{- /* The AWS LBC (>= v2.4.3) orders rules by pathType — Exact
+                 first, then Prefix (longest first), then
+                 ImplementationSpecific in manifest order — NOT by spec
+                 order. A Prefix "/" therefore outranks every
+                 ImplementationSpecific carve, so when extraPaths are
+                 present the default "/" downgrades to
+                 ImplementationSpecific (rendered last) unless pathType is
+                 set explicitly. A group member that must not own the
+                 catch-all at all sets omitDefaultPath: true. */}}
+          {{- if $v.omitDefaultPath }}
+          {{- $_ := required (printf "omitDefaultPath requires at least one extraPaths entry for ingress [%v]" $k) $v.extraPaths }}
+          {{- end }}
           {{- range $p := $v.extraPaths }}
           - path: {{ required (printf "You must specify a path for every extraPaths entry of ingress [%v]" $k) $p.path }}
             pathType: {{ $p.pathType | default "ImplementationSpecific" }}
@@ -153,13 +162,15 @@ spec:
                 port:
                   number: {{ required (printf "You must specify a service with name and port for every extraPaths entry of ingress [%v]" $k) $p.service.port }}
           {{- end }}
+          {{- if not $v.omitDefaultPath }}
           - path: /
-            pathType: {{ $v.pathType | default "Prefix" }}
+            pathType: {{ $v.pathType | default (ternary "ImplementationSpecific" "Prefix" (not (empty $v.extraPaths))) }}
             backend:
               service:
                 name: {{ $v.service.name }}
                 port:
                   number: {{ $v.service.port }}
+          {{- end }}
       {{- if and $wwwRedirect (eq $wwwRedirect $entry) }}
           - path: /
             pathType: {{ $v.pathType | default "Prefix" }}
