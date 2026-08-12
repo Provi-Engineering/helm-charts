@@ -25,6 +25,17 @@
 {{- $healthcheckPath := default "/health" $v.healthcheckPath }}
 {{- $healthcheckProtocol := default "HTTP" $v.healthcheckProtocol }}
 {{- $nameTag := printf "Name=%s-alb" $k }}
+{{- /* Ingress groups: members share one ALB. The Name tag is group-level
+       (conflicting tags make the controller refuse to build the group), so
+       grouped ingresses share the group name as their tag. */}}
+{{- with $v.group }}
+{{- $groupName := required (printf "You must specify group.name when group is set for ingress [%v]" $k) .name }}
+{{- $nameTag = printf "Name=%s" $groupName }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/group.name" $groupName }}
+{{- if hasKey . "order" }}
+{{- $_ := set $albAnnotations "alb.ingress.kubernetes.io/group.order" (printf "%v" .order) }}
+{{- end }}
+{{- end }}
 {{- $_ := required (printf $certArnErrorMessage $k) $v.certificateArn}}
 {{- $_ := required (printf $schemeErrorMessage $k) $v.scheme}}
 {{- if $v.imperva }}
@@ -130,13 +141,36 @@ spec:
     - host: "{{ $entry }}"
       http:
         paths:
+          {{- /* The AWS LBC (>= v2.4.3) orders rules by pathType — Exact
+                 first, then Prefix (longest first), then
+                 ImplementationSpecific in manifest order — NOT by spec
+                 order. A Prefix "/" therefore outranks every
+                 ImplementationSpecific carve, so when extraPaths are
+                 present the default "/" downgrades to
+                 ImplementationSpecific (rendered last) unless pathType is
+                 set explicitly. A group member that must not own the
+                 catch-all at all sets omitDefaultPath: true. */}}
+          {{- if $v.omitDefaultPath }}
+          {{- $_ := required (printf "omitDefaultPath requires at least one extraPaths entry for ingress [%v]" $k) $v.extraPaths }}
+          {{- end }}
+          {{- range $p := $v.extraPaths }}
+          - path: {{ required (printf "You must specify a path for every extraPaths entry of ingress [%v]" $k) $p.path }}
+            pathType: {{ $p.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ required (printf "You must specify a service with name and port for every extraPaths entry of ingress [%v]" $k) $p.service.name }}
+                port:
+                  number: {{ required (printf "You must specify a service with name and port for every extraPaths entry of ingress [%v]" $k) $p.service.port }}
+          {{- end }}
+          {{- if not $v.omitDefaultPath }}
           - path: /
-            pathType: {{ $v.pathType | default "Prefix" }}
+            pathType: {{ $v.pathType | default (ternary "ImplementationSpecific" "Prefix" (not (empty $v.extraPaths))) }}
             backend:
               service:
                 name: {{ $v.service.name }}
                 port:
                   number: {{ $v.service.port }}
+          {{- end }}
       {{- if and $wwwRedirect (eq $wwwRedirect $entry) }}
           - path: /
             pathType: {{ $v.pathType | default "Prefix" }}

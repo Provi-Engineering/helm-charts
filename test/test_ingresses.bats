@@ -195,3 +195,45 @@ teardown() {
                 port:
                   name: use-annotation"
 }
+
+# bats test_tags=tag:alb-group
+@test "alb-group: grouped ingresses share the group annotations and Name tag" {
+  run helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/
+  assert_output --partial 'alb.ingress.kubernetes.io/group.name: my-cool-group'
+  assert_output --partial 'alb.ingress.kubernetes.io/group.order: "10"'
+  assert_output --partial 'alb.ingress.kubernetes.io/group.order: "20"'
+  assert_output --partial 'alb.ingress.kubernetes.io/tags: Name=my-cool-group'
+  refute_output --partial 'alb.ingress.kubernetes.io/tags: Name=app-alb'
+  refute_output --partial 'alb.ingress.kubernetes.io/tags: Name=static-alb'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: the carve member renders only its extraPaths, the catch-all member owns /" {
+  run helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/
+  assert_output --partial 'path: /api/*'
+  assert_output --partial 'path: /users/*'
+  assert_output --partial 'pathType: ImplementationSpecific'
+  # exactly one "- path: /" across the group: the omitDefaultPath member must not
+  # emit the catch-all (a Prefix "/" outranks every ImplementationSpecific carve)
+  [ "$(echo "$output" | grep -c 'path: /$')" -eq 1 ]
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: group.name is required when group is set" {
+  run helm template -f test/fixtures/ingresses/badvalues-alb-group-no-name.yaml test/fixtures/ingresses/
+  assert_failure
+  assert_output --partial 'You must specify group.name when group is set for ingress [dummy]'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: omitDefaultPath without extraPaths fails" {
+  run helm template -f test/fixtures/ingresses/badvalues-omitdefaultpath-no-extrapaths.yaml test/fixtures/ingresses/
+  assert_failure
+  assert_output --partial 'omitDefaultPath requires at least one extraPaths entry for ingress [dummy]'
+}
+
+# bats test_tags=tag:alb-group
+@test "alb-group: matches expected output" {
+  helm template -f test/fixtures/ingresses/values-alb-group.yaml test/fixtures/ingresses/ > "$TEST_TEMP_DIR/alb_group_output.yaml"
+  assert diff -ub test/expected_output/ingresses-alb-group.yaml "$TEST_TEMP_DIR/alb_group_output.yaml"
+}
