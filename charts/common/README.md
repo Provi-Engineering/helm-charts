@@ -110,6 +110,9 @@ deployments:
           - type: Pods
             value: 1
             periodSeconds: 120
+    # Optional - see Pod Disruption Budgets below
+    podDisruptionBudget:
+      maxUnavailable: 1
     pod:
       containers:
         app:
@@ -276,6 +279,10 @@ deployments:
           env:
             EXTRA_VAR: value
 ```
+
+## Pod Disruption Budgets
+
+A deployment's `podDisruptionBudget` takes `minAvailable` or `maxUnavailable`, as an integer or a percentage. The render fails when the budget allows no voluntary disruptions at the deployment's replica floor (`autoscaling.minReplicas` when `autoscaling` is set, otherwise `replicas`), because such a budget blocks node drains. Percentages round up, as they do in Kubernetes, so `minAvailable: 25%` on one replica fails. Use `maxUnavailable: 1` for single-replica deployments.
 
 ## Configuring Service Accounts
 

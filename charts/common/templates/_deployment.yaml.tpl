@@ -25,8 +25,13 @@
 {{ include "common.kubernetes.podautoscaler" (dict "global" $global "selector" $deploymentName "autoscaling" .) }}
 {{- end }}
 
+{{- $replicaFloor := int ($deploymentDetails.replicas | default 0) }}
+{{- with $deploymentDetails.autoscaling }}
+{{- $replicaFloor = int (include "common.kubernetes.podautoscaler.minReplicas" .) }}
+{{- end }}
+
 {{- with $deploymentDetails.podDisruptionBudget }}
-{{- include "common.kubernetes.pod_disruption_budget" (dict "chart" $chart "deploymentName" $deploymentName "selector" $selector "pdb" .) }}
+{{- include "common.kubernetes.pod_disruption_budget" (dict "chart" $chart "deploymentName" $deploymentName "selector" $selector "pdb" . "replicaFloor" $replicaFloor) }}
 {{- end }}
 
 ---

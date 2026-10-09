@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2026-10-09
+
+### Changed
+
+- INFRASEC-3955: the render fails when a deployment's `podDisruptionBudget` allows no voluntary disruptions at its replica floor (`autoscaling.minReplicas` when `autoscaling` is set, otherwise `replicas`). This covers `minAvailable` at or above the floor, a `minAvailable` percentage that rounds up to the floor, and `maxUnavailable` of `0`. Such budgets block Karpenter node drains. Values that rendered on 1.9.0 can fail on 1.10.0; set `maxUnavailable: 1` on single-replica deployments.
+
 ## [1.9.0] - 2026-08-12
 
 ### Added

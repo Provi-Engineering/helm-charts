@@ -87,5 +87,55 @@ teardown() {
 @test "deployments: ensures a separate document between all deployments when PDBs are defined" {
   run helm template -f test/fixtures/deployments/values-multiple-deployments.yaml test/fixtures/deployments/
   refute_output --partial 'karpenter---'
-  assert_output --partial 'maxUnavailable: 0'
+  assert_output --partial 'name: my-cool-app-worker2-pdb'
+  assert_output --partial 'maxUnavailable: 1'
+}
+
+# bats test_tags=tag:pdb-single-replica
+@test "deployments: renders podDisruptionBudget with maxUnavailable on a single replica" {
+  run helm template -f test/fixtures/deployments/values-pdb-singleReplica.yaml test/fixtures/deployments/
+  assert_success
+  assert_output --partial 'maxUnavailable: 1'
+}
+
+# bats test_tags=tag:pdb-guard-min-available
+@test "deployments: fails when minAvailable equals the replica count" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-minAvailable-allReplicas.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions'
+}
+
+# bats test_tags=tag:pdb-guard-min-avail-percent
+@test "deployments: fails when a minAvailable percentage rounds up to every replica" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-minAvailPercent-roundsUp.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions'
+}
+
+# bats test_tags=tag:pdb-guard-max-unavailable-zero
+@test "deployments: fails when maxUnavailable is zero" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-maxUnavailable-zero.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions'
+}
+
+# bats test_tags=tag:pdb-guard-autoscaling-floor
+@test "deployments: uses autoscaling minReplicas as the replica floor for the PDB guard" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-minAvailable-autoscalingFloor.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions'
+}
+
+# bats test_tags=tag:pdb-guard-max-unavailable-zero-external-autoscaler
+@test "deployments: fails when maxUnavailable is zero without a replica floor" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-maxUnavailable-zeroExternalAutoscaler.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions'
+}
+
+# bats test_tags=tag:pdb-guard-both-keys
+@test "deployments: fails when minAvailable blocks even though maxUnavailable is also set" {
+  run helm template -f test/fixtures/deployments/badvalues-pdb-bothKeys.yaml test/fixtures/deployments/
+  assert_failure
+  assert_output --partial 'podDisruptionBudget for deployment [web] allows no voluntary disruptions (minAvailable: 1'
 }
