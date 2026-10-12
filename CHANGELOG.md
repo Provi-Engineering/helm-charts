@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-10-12
+
+### Added
+
+- INFRASEC-5112: `pod.topologySpreadConstraints.hostname` (default `true`). Setting it to `false` renders the zone spread alone, so replicas balance across zones and pack onto existing nodes instead of Karpenter launching nodes to satisfy the hostname spread. Omitting the key renders byte-identical output to before.
+
 ## [1.10.0] - 2026-10-09
 
 ### Changed
