@@ -284,6 +284,20 @@ deployments:
 
 A deployment's `podDisruptionBudget` takes `minAvailable` or `maxUnavailable`, as an integer or a percentage. The render fails when the budget allows no voluntary disruptions at the deployment's replica floor (`autoscaling.minReplicas` when `autoscaling` is set, otherwise `replicas`), because such a budget blocks node drains. Percentages round up, as they do in Kubernetes, so `minAvailable: 25%` on one replica fails. Use `maxUnavailable: 1` for single-replica deployments.
 
+## Topology Spread Constraints
+
+Setting `pod.topologySpreadConstraints` renders a zone spread (`maxSkew: 1`, `DoNotSchedule`) over the pods matching `matchLabels`. Each new replica goes to the zone with the fewest replicas, and within a zone it packs onto any existing node with room; Karpenter adds a node only when a pod has no room in its zone. Above one replica per zone, several replicas can share a node, so losing that node (including a spot interruption) takes all of them down at once.
+
+Set `hostname: true` to add a hostname spread (`maxSkew: 2`, `ScheduleAnyway`) for a workload that should prefer spreading its replicas across nodes. It is a preference, not a guarantee: the scheduler still co-locates replicas when nodes lack room. Karpenter launches nodes to satisfy it, so a workload that scales to many replicas adds nodes as it scales.
+
+```yaml
+pod:
+  topologySpreadConstraints:
+    hostname: true
+    matchLabels:
+      app.kubernetes.io/name: your-app
+```
+
 ## Configuring Service Accounts
 
 By default pods do not have SA (Service Account) enabled. To enable SA, add the following
