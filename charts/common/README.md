@@ -286,12 +286,14 @@ A deployment's `podDisruptionBudget` takes `minAvailable` or `maxUnavailable`, a
 
 ## Topology Spread Constraints
 
-Setting `pod.topologySpreadConstraints` renders two constraints over the pods matching `matchLabels`: a zone spread (`maxSkew: 1`, `DoNotSchedule`) and a hostname spread (`maxSkew: 2`, `ScheduleAnyway`). Karpenter can launch extra nodes to satisfy the hostname spread when a workload scales to many replicas. Set `hostname: false` to render the zone spread alone: replicas still balance across zones and pack onto existing nodes, and Karpenter adds a node only when a pod has no room in its zone. Several replicas can then share one node, so losing that node (including a spot interruption) takes all of them down at once.
+Setting `pod.topologySpreadConstraints` renders a zone spread (`maxSkew: 1`, `DoNotSchedule`) over the pods matching `matchLabels`. Each new replica goes to the zone with the fewest replicas, and within a zone it packs onto any existing node with room; Karpenter adds a node only when a pod has no room in its zone. Above one replica per zone, several replicas can share a node, so losing that node (including a spot interruption) takes all of them down at once.
+
+Set `hostname: true` to add a hostname spread (`maxSkew: 2`, `ScheduleAnyway`) for a workload that should prefer spreading its replicas across nodes. It is a preference, not a guarantee: the scheduler still co-locates replicas when nodes lack room. Karpenter launches nodes to satisfy it, so a workload that scales to many replicas adds nodes as it scales.
 
 ```yaml
 pod:
   topologySpreadConstraints:
-    hostname: false
+    hostname: true
     matchLabels:
       app.kubernetes.io/name: your-app
 ```

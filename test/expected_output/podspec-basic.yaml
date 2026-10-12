@@ -75,12 +75,6 @@ spec:
         labelSelector:
           matchLabels:
             app.kubernetes.io/name: "test-podspec"
-      - maxSkew: 2
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: ScheduleAnyway
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: "test-podspec"
       serviceAccountName: test-podspec
       automountServiceAccountToken: true
       tolerations:
