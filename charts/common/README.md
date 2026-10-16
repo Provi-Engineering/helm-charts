@@ -110,6 +110,9 @@ deployments:
           - type: Pods
             value: 1
             periodSeconds: 120
+      # Optional - annotations on the HPA itself, e.g. to keep its rollout metric gaps out of Argo CD app health
+      annotations:
+        argocd.argoproj.io/ignore-healthcheck: "true"
     # Optional - see Pod Disruption Budgets below
     podDisruptionBudget:
       maxUnavailable: 1

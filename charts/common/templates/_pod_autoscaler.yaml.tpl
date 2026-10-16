@@ -4,6 +4,10 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .selector }}
+  {{- with .autoscaling.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   minReplicas: {{ include "common.kubernetes.podautoscaler.minReplicas" .autoscaling }}
   maxReplicas: {{ default 3 .autoscaling.maxReplicas }}
