@@ -49,3 +49,11 @@ teardown() {
   assert_output --partial 'averageUtilization: 60'
   assert_output --partial 'averageUtilization: 50'
 }
+
+# bats test_tags=tag:autoscaler-annotations
+@test "autoscaler: renders annotations on the HPA metadata if provided" {
+  run helm template -f test/fixtures/autoscaler/values-annotations.yaml test/fixtures/autoscaler/
+  assert_success
+  assert_output --partial $'kind: HorizontalPodAutoscaler\nmetadata:\n  name: web\n  annotations:\n    argocd.argoproj.io/ignore-healthcheck: "true"\nspec:\n'
+  assert_equal "$(grep -c 'argocd.argoproj.io/ignore-healthcheck' <<< "$output")" 1
+}
