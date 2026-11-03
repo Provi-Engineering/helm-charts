@@ -16,6 +16,11 @@ jobs:
           fetch-depth: 0
           submodules: true
 
+      - name: Install Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: v4.3.1
+
       - name: Install helm deps
         run: |
           helm dependency build "${GITHUB_WORKSPACE}/charts/common"
