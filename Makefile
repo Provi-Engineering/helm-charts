@@ -2,6 +2,15 @@ PROFILE := ${AWS_PROFILE}
 REPO_BUCKET := ${HELM_REPO_BUCKET}
 TAG ?= all
 
+.PHONY: install
+install:
+	git submodule update --init
+	helm dependency build charts/common
+
+.PHONY: check
+check:
+	bash scripts/check.sh
+
 .PHONY: package
 package:
 	helm package common -d _repo
