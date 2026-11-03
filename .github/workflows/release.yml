@@ -26,6 +26,7 @@ jobs:
       - name: Install test dependencies
         run: |
           make install
+
       - name: Test
         run: |
           make check
