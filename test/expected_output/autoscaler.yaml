@@ -83,6 +83,7 @@ spec:
                     operator: In
                     values:
                       - karpenter
+
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2

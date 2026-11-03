@@ -12,6 +12,7 @@ metadata:
     chart: my-cool-app
     chartVersion: 1.0.0
     team: cool-team
+
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: v1
@@ -34,6 +35,8 @@ spec:
       port: 8080
       protocol: TCP
       targetPort: 8080
+
+
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: apps/v1
@@ -120,6 +123,7 @@ spec:
                     operator: In
                     values:
                       - karpenter
+
 ---
 # Source: my-cool-app/templates/microservice.yaml.tpl
 apiVersion: autoscaling/v2
