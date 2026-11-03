@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(make install)",
+      "Bash(make test)",
+      "Bash(make check)",
+      "Bash(helm dependency build charts/common)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(helm * --post-renderer*)",
+      "Bash(helm plugin *)",
+      "Bash(make publish)",
+      "Bash(make init-repo)",
+      "Bash(helm push *)",
+      "Bash(helm s3 *)",
+      "Bash(kubectl *)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR\"/.claude/skills/dev-workflow/scripts/compact-reload.sh || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --no-project python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop_make_check.py || exit 0",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": false,
+    "code-simplifier@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
+  }
+}
