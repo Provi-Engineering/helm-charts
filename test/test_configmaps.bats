@@ -2,13 +2,8 @@
 setup() {
   load 'test_helper/bats-support/load'
   load 'test_helper/bats-assert/load'
-  load 'test_helper/bats-file/load'
 
-  TEST_TEMP_DIR="$(temp_make)"
-}
-
-teardown() {
-  temp_del "$TEST_TEMP_DIR"
+  TEST_TEMP_DIR="$BATS_TEST_TMPDIR"
 }
 
 # bats test_tags=tag:basic
@@ -24,7 +19,7 @@ teardown() {
 # bats test_tags=tag:basic
 @test "configmaps: matches expected output" {
   helm template -f test/fixtures/configmaps/values-basic.yaml test/fixtures/configmaps/ > "$TEST_TEMP_DIR/default_output.yaml"
-  assert cmp -s test/expected_output/configmaps.yaml "$TEST_TEMP_DIR/default_output.yaml"
+  assert diff -u test/expected_output/configmaps.yaml "$TEST_TEMP_DIR/default_output.yaml"
 }
 
 # bats test_tags=tag:file-template

@@ -74,7 +74,8 @@ dependencies:
     version: "$COMMON_VERSION"
 EOF
 
-  echo "Running helm dependency update in ${chart_dir}"
-  # Equivalent to 'helm dep up' in modern Helm (aka 'helm up')
-  (cd "$chart_dir" && helm dependency update)
+  echo "Running helm dependency update --skip-refresh in ${chart_dir}"
+  # The only dependency is file://, so skip the repository refresh and ignore
+  # locally configured repositories (one with no cached index fails the update)
+  (cd "$chart_dir" && HELM_REPOSITORY_CONFIG=/dev/null helm dependency update --skip-refresh)
 done
