@@ -2,13 +2,8 @@
 setup() {
   load 'test_helper/bats-support/load'
   load 'test_helper/bats-assert/load'
-  load 'test_helper/bats-file/load'
 
-  TEST_TEMP_DIR="$(temp_make)"
-}
-
-teardown() {
-  temp_del "$TEST_TEMP_DIR"
+  TEST_TEMP_DIR="$BATS_TEST_TMPDIR"
 }
 
 # bats test_tags=tag:cronjobs-basic

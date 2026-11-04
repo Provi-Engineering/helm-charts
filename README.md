@@ -17,11 +17,11 @@ provi` to see the charts.
 
 ## Development
 
-Please refer to chart [develoment documentation](dev/README.md)
+See [Testing](#testing) for running the chart's tests.
 
 ### Releasing
 
-See instructions in the [develoment documentation](dev/README.md). The upshot:
+To release:
 * Update the `CHANGELOG.md`
 * Update the version in `common/Chart.yaml`
 * Run `. scripts/update-fixture-charts.sh <version>` (where `<version>` is the version you've updated to
@@ -58,14 +58,30 @@ git submodule update --init
 #### To run all tests
 
 ```
-make test
+make check
 ```
+
+`make check` is the full gate: it refreshes the fixture charts against the current
+`charts/common` version, runs the tests, then restores the fixtures. `make test` runs only the
+tests, and needs the fixture dependencies that `make check` builds, so run `make check` once in a
+fresh checkout.
+
+The tests run in parallel, one bats process per `test/test_*.bats` file. The run fails if any test
+fails or if fewer tests ran than the tag selects.
 
 #### To run individual tests
 
 ```
 TAG=podspec-securitycontext make test
 ```
+
+A `TAG` that selects no tests fails and names the tag.
+
+#### When a run fails
+
+The run keeps its temp directories and prints their location, one `.../bats-run-*/test/` path per
+failing test file. In it, `N.name` names test N, and the directory `N` holds that test's files,
+such as its rendered output. A passing run deletes them.
 
 You can get a list of tags by running:
 ```

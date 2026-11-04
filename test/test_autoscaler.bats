@@ -2,13 +2,8 @@
 setup() {
   load 'test_helper/bats-support/load'
   load 'test_helper/bats-assert/load'
-  load 'test_helper/bats-file/load'
 
-  TEST_TEMP_DIR="$(temp_make)"
-}
-
-teardown() {
-  temp_del "$TEST_TEMP_DIR"
+  TEST_TEMP_DIR="$BATS_TEST_TMPDIR"
 }
 
 # bats test_tags=tag:autoscaler-basic
@@ -20,7 +15,7 @@ teardown() {
 # bats test_tags=tag:autoscaler-basic
 @test "autoscaler: matches expected output" {
   helm template -f test/fixtures/autoscaler/values-basic.yaml test/fixtures/autoscaler/ > "$TEST_TEMP_DIR/default_output.yaml"
-  assert cmp -s test/expected_output/autoscaler.yaml "$TEST_TEMP_DIR/default_output.yaml"
+  assert diff -u test/expected_output/autoscaler.yaml "$TEST_TEMP_DIR/default_output.yaml"
 }
 
 # bats test_tags=tag:minReplicas-default

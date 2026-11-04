@@ -28,4 +28,4 @@ init-repo:
 # test/bats/bin/bats --filter-tags tag:nodns test/
 .PHONY: test
 test:
-	BATSLIB_TEMP_PRESERVE_ON_FAILURE=1 AWS_PROFILE=${PROFILE} test/bats/bin/bats --filter-tags tag:${TAG} test/
+	TAG=$(TAG) bash scripts/test.sh
