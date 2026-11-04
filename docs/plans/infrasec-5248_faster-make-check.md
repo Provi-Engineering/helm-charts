@@ -37,7 +37,8 @@ Checked against `main` at `a424256`:
 - `scripts/update-fixture-charts.sh` (the `helm dependency update` call and its echo line)
 - `test/test_*.bats` (setup and teardown only)
 - `.gitmodules` and the `test/test_helper/bats-file` submodule (removed)
-- `README.md` (the Testing section)
+- `README.md` (the Testing section, and the Development and Releasing links)
+- `test/test_autoscaler.bats` and `test/test_configmaps.bats` (the `cmp -s` assertions only)
 - `CLAUDE.md` (the Toolchain, Gate implementations, and Services rows)
 - `docs/plans/infrasec-5248_faster-make-check.md`
 
@@ -81,6 +82,17 @@ change to the gate scripts at Full.
      implementations describes the parallel per-file runner and its count guard. Services
      drops the Helm repo refresh.
 
+Added at the operator's instruction after implementation ("Make all 3 followup fixes now"):
+
+7. **Diff on failure.** The two `assert cmp -s` assertions become `assert diff -u`. The
+   comparison stays byte-exact (no `-b`), and a failure prints the diff.
+8. **README links.** The Development and Releasing sections link the missing `dev/README.md`.
+   Point Development at the Testing section, and drop the dead link from Releasing.
+9. **Locally configured repositories.** A repo in the engineer's `repositories.yaml` with no
+   cached index fails `helm dependency update` even with `--skip-refresh`. The fixture script
+   runs it with `HELM_REPOSITORY_CONFIG=/dev/null`, since the only dependency is `file://`. This
+   removes the failure, so no message is needed.
+
 ### Verification goals
 
 Evidence is command output saved under the session scratchpad and summarised in the PR.
@@ -90,13 +102,16 @@ Evidence is command output saved under the session scratchpad and summarised in 
 | 1 | `make check` runs all 123 tests and exits 0 | test | `make check` output: the runner reports 123 of 123 tests, exit 0 |
 | 2 | A changed expected output fails the gate | test | Edit one line of `test/expected_output/autoscaler.yaml`, run `make check`: exit non-zero with the failing test shown. Restore the file with `git checkout` |
 | 3 | The tree is clean after a passing and a failing run | inspection | `git status --short` is empty after the AC1 and AC2 runs (after the AC2 restore) |
-| 4 | No Helm repository refresh | test | `make check` with `HELM_REPOSITORY_CONFIG` pointing at a scratch file that lists an unreachable repo (`http://127.0.0.1:9`): it passes, and the output has no "Hang tight" or "Unable to get an update" line |
+| 4 | No Helm repository refresh | test | `make check` with `HELM_REPOSITORY_CONFIG` listing an unreachable repo (`http://127.0.0.1:9`) and `HELM_REPOSITORY_CACHE` holding a stub index for it: it passes with no "Hang tight" or "Unable to get an update" line. The same setup without `--skip-refresh` prints those lines (control) |
 | 5 | `TAG` runs only the tagged tests | test | `TAG=podspec-securitycontext make test` runs exactly 1 test. `TAG=no-such-tag make test` exits non-zero naming the tag (brainstorm Q2) |
 | 6 | Wall time at most 50% of `main` | test | Two timed `make check` runs back to back on this Mac, compared with the 55.35s/52.65s baseline. Both must be 26.3s or less |
 | 7 | Fewer tests than defined fails, whatever `parallel` is installed | test | `BATS=<scratch wrapper that drops one ok line>` `make test` exits non-zero with expected and actual counts. AC1 passes on this Mac, where moreutils' `parallel` shadows GNU's. `scripts/test.sh` has no `parallel` or `--jobs` |
 | 8 | CI's `make test` behaves the same | inspection | `CI=true make test < /dev/null` passes with 123 tests. `release.yml`'s test job runs `make test` after `update-fixture-charts.sh`. The runner uses only bash, xargs, mktemp and getconf, which ubuntu-latest has |
 | 9 | bats-file is gone and the docs match | inspection | `.gitmodules` has no bats-file entry. `git grep -n 'bats-file\|temp_make\|temp_del'` finds only this plan. `git submodule status` lists two helpers. The `CLAUDE.md` Toolchain row is updated |
 | 10 | A failed run keeps its temp dirs, and the README says how | test | The AC2 run prints a kept temp-dir path that exists and holds that test's output. `README.md` explains it |
+| F1 | A failing `cmp` test prints a diff | test | Edit one line of `test/expected_output/autoscaler.yaml`, run `make check`: the output shows the changed line as a `-`/`+` pair. Restore the file |
+| F2 | No dead README links | inspection | `grep -n 'dev/README' README.md` finds nothing |
+| F3 | A configured repo with no cached index does not break `make check` | test | `make check` with `HELM_REPOSITORY_CONFIG` listing an unreachable repo and no cached index passes (failed before this step) |
 
 ### Risks
 
@@ -117,9 +132,8 @@ Evidence is command output saved under the session scratchpad and summarised in 
 
 - Fixture `Chart.yaml`/`Chart.lock` version drift: INFRASEC-5247.
 - Running the tests on pull requests: INFRASEC-5242.
-- `README.md:20` links a missing `dev/README.md`. This is a candidate follow-up ticket.
+- `README.md`'s Releasing steps name `common/Chart.yaml`; the path is `charts/common/Chart.yaml`.
 
 ### Parking
 
-Step 7, the plan gate: the plan is waiting for the operator's review. Next is the
-implementation subagent.
+Step 9, the gate run, after the follow-up fixes. Next: the plan-compliance review, then the PR.
