@@ -29,7 +29,7 @@ Agent instructions for specifications.
   ticket against it.
 - A spec is evidence of the design, never of how the code works: read the code. Its status text
   may be stale, so do not follow its next steps.
-- The pickup review re-validates a spec before work resumes from it: the `intent-reviewer` agent
+- The pickup review re-validates a spec before work resumes from it: the `proof:intent-reviewer` agent
   checks its premises against the checkout, `docs/DESIGN.md`, and the specs accepted after it. A conflict stops the work for the operator.
 
 ## 3. How specs are used
@@ -40,7 +40,7 @@ Agent instructions for specifications.
 - Future specs help an agent judge the scope of the current work. Completed, out-of-date specs
   mislead it, which is why a spec never stands in for the code.
 - Specs get tweaked during the work. Section 5 covers how.
-- Ticket work starts with `/dev-workflow <KEY>` (the root `CLAUDE.md`).
+- Ticket work starts with `/proof:dev-workflow <KEY>` (the root `CLAUDE.md`).
   Design runs when the operator says at the intake stop that the ticket needs a spec, or returns
   the ticket to Design at the plan gate: it writes the spec in its own
   worktree and draft PR. Build reads the merged spec and runs the `build-start` pickup review.

@@ -13,7 +13,7 @@ specification links to it and never restates it.
   after the agent states its recommendation. Design runs when the answer
   is yes, and when the operator returns the ticket to Design at the plan gate.
 - **Authoring.** The developer and the product owner write it together, with the
-  `dev-workflow` skill's Design stage.
+  `proof:dev-workflow` skill's Design stage.
 - **Name.** `docs/specifications/<ticket key>_<subject>.md` in lowercase, so listing
   `docs/specifications/<ticket key>*` finds it from the ticket.
 - **Frontmatter.** `id` (equals the filename stem) and `ticket` (the ticket URL). No status
@@ -34,6 +34,6 @@ specification links to it and never restates it.
   re-validates it against the code and later specifications;
   `docs/specifications/CLAUDE.md` has the detail.
 
-Before writing a specification, read the template at
-`.claude/skills/dev-workflow/references/specification-template.md`; a filled-in example is
-`.claude/skills/dev-workflow/references/specification-example.md`.
+Before writing a specification, read the template, `references/specification-template.md` in the
+`proof` plugin's `dev-workflow` skill; a filled-in example is `references/specification-example.md`
+beside it.
