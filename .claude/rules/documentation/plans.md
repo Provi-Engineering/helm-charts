@@ -34,6 +34,6 @@ A plan names the files that change, the order of the work, and the tests that pr
   merges. Plan files are records, not instructions: only the current ticket's approved plan
   governs a session.
 
-Before writing a plan, read the template at
-`.claude/skills/dev-workflow/references/plan-template.md`. Merged plans in `docs/plans/` show
+Before writing a plan, read the template, `references/plan-template.md` in the `proof` plugin's
+`dev-workflow` skill. Merged plans in `docs/plans/` show
 the expected level of detail; follow the template where an older plan differs from it.
