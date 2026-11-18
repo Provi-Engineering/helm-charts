@@ -31,17 +31,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run --no-project python \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop_make_check.py || exit 0",
-            "timeout": 600
-          }
-        ]
-      }
     ]
   },
   "extraKnownMarketplaces": {
