@@ -13,10 +13,11 @@ by their labels. Run the session unattended (auto mode) only after the plan is a
 | Language | Helm templates (Go templates and Sprig) producing Kubernetes YAML; tests in bats |
 | Toolchain | Helm 4 (CI pins v4.3.1; `make check` refuses Helm 3, whose blank-line output differs). bats-core, bats-support and bats-assert are git submodules that `make install` initialises. [uv](https://docs.astral.sh/uv/) runs the Stop hook only |
 | Gate implementations | `make test` runs `scripts/test.sh`, which runs the bats suite in `test/` one process per file in parallel (xargs, no GNU parallel). It fails when a test fails or fewer tests ran than `bats --count` selects, so a `TAG` matching nothing fails too; a failed run keeps its temp dirs and prints where. `make check` builds `charts/common`'s dependencies, points every fixture chart at the current `charts/common` version, runs `make test`, then restores the fixture `Chart.yaml` and `Chart.lock` files. `make test` alone needs those fixture dependencies, so in a fresh checkout or worktree run `make check` once before `make test` or `TAG=<tag> make test` (one tagged test; not a gate). If a killed run leaves `test/fixtures/*/Chart.*` modified, `git checkout -- test/fixtures` restores them |
+| Gate commands | `install`: `make install`; `lint`: none; `typecheck`: none; `security`: none; `test`: `make check`; `smoke`: none; `check`: `make check` |
 | Services the gates need | No credentials and no cluster. `make install` fetches the bats submodules, and `make check` runs `helm dependency update --skip-refresh` in each fixture, so it never contacts a Helm repository |
 | Images | None |
 | CI | GitHub Actions, `.github/workflows/release.yml`; read it to learn what CI runs. Pull requests against `main` run `test` (`make install`, then `make check`) and `security` (Snyk IaC); pushes to `main` and `ci-testing` also run `release`, which a pull request never does. A ruleset on `main` requires `test` and `security` to pass before a pull request merges |
-| Tracker | Jira project `INFRASEC`, keys like `INFRASEC-123` |
+| Tracker | Jira project `PLAT`, keys like `PLAT-123` |
 | Issue authors | Internal only |
 | Tier examples | Full: `charts/common/**`, `test/**`, `scripts/`, the Makefile, `.github/`, `.gitmodules`, `.snyk`, and Claude Code hooks and settings. Standard: `README.md`, `charts/common/README.md`, `CHANGELOG.md` on its own, documents, plans, specifications, and agent instructions |
 | Deliverables that need no specification | Documents: how-to, explanation, reference, and decision records |
