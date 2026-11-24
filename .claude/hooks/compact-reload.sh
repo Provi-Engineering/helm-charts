@@ -18,5 +18,5 @@ elif [ -n "$CLAUDE_PROJECT_DIR" ] && [ -r "$CLAUDE_PROJECT_DIR/$rel" ]; then
 fi
 [ -n "$state" ] || exit 0
 cat "$state" 2>/dev/null
-printf '\n%s\n' 'Invoke the dev-workflow skill again, then re-read every reference of the current step before continuing.'
+printf '\n%s\n' 'Invoke the proof:dev-workflow skill again, then re-read every reference of the current step before continuing.'
 exit 0
